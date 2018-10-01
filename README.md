@@ -13,7 +13,7 @@ variablename - a variable name to bet set. variables are defined as: {$variable}
 value - the value to be set
 
 Example:
-<pre>
+<code>
 
 <html>
 <head>
@@ -40,4 +40,4 @@ Example:
 <div id="point">#point</div>
 </body>
 </html>
-</pre>
+</code>
