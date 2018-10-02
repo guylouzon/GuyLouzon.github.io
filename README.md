@@ -1,6 +1,9 @@
 # branches.js
 set and populate variables in html
 
+Set you html as template annd embed a JSON quickly inside
+Use ajax and create super-light-onepage-webapps
+
 3 simple functions:
 plantVar, plantHTML, plantAttrib
 
