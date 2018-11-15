@@ -14,7 +14,6 @@ function initBranches() {
   tempstr = nods[i].innerHTML;
  console.log(tempstr);
   var varNames = tempstr.match(/\{\$(.*?)\}/i); // match groups! use exec
-  console.log("initbranches varNames: " + varNames[1]);
   nods[i].classList.add("branch_html_" + varNames[1]);
     comment = document.createComment(tempstr);
     nods[i].insertBefore(comment, nods[i].firstChild);
@@ -23,7 +22,6 @@ function initBranches() {
   }
   
   function plantHTML(key,value) {
-   console.log("update!");
    var nods = document.getElementsByClassName("branch_html_" + key);
    var tempstr = "";
    var tempcomment = "";
