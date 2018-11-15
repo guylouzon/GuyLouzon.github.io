@@ -1,48 +1,56 @@
-function plantVar(class0,var0,value0) { //class,value0
-	var tags = document.getElementsByClassName(class0);
-	var i;
-	var tempstr = "";
-	var tempstr2 = "";
-	//var attribs = array[];
-	for (i = 0;i < tags.length;i++) {
-		tempstr = tags[i].innerHTML;
-		tags[i].innerHTML = tempstr.replace("{$"+ var0 +"}",value0);
-		if (tags[i].hasAttributes()) {
-			var attribs = tags[i].attributes;
-			for (j = 0;j < attribs.length;j++) {
-				tempstr2 = attribs[j].value;
-				attribs[j].value = tempstr2.replace("{$"+ var0 +"}",value0);
-			}
-		}
-	}
-}
 
+//var HTvarnames = tempstr.match(/(\{)(\$).*?(\})/i);
 
-function plantHTML(class0,var0,value0) { //class,value0
-	var tags = document.getElementsByClassName(class0);
-	var i;
-	var tempstr = "";
-	var tempstr2 = "";
-	//var attribs = array[];
-	for (i = 0;i < tags.length;i++) {
-		tempstr = tags[i].innerHTML;
-		tags[i].innerHTML = tempstr.replace("{$"+ var0 +"}",value0);
-	}
-}
+var branches = {};
 
+function initBranches() {
+ var branch = {};
+ var tempstr = "";
+ var comment = "";
+ console.log(tempstr);
+ var nods = document.getElementsByClassName("branches");
+ for (i = 0;i < nods.length;i++) {
 
-function plantAttrib(class0,var0,value0) { //class,value0
-	var tags = document.getElementsByClassName(class0);
-	var i;
-	var tempstr2 = "";
-	//var attribs = array[];
-	for (i = 0;i < tags.length;i++) {
-		if (tags[i].hasAttributes()) {
-			var attribs = tags[i].attributes;
-			for (j = 0;j < attribs.length;j++) {
-				tempstr2 = attribs[j].value;
-				attribs[j].value = tempstr2.replace("{$"+ var0 +"}",value0);
-			}
-		}
-	}
-}
+  tempstr = nods[i].innerHTML;
+ console.log(tempstr);
+  var varNames = tempstr.match(/\{\$(.*?)\}/i); // match groups! use exec
+  console.log("initbranches varNames: " + varNames[1]);
+  nods[i].classList.add("branch_html_" + varNames[1]);
+    comment = document.createComment(tempstr);
+    nods[i].insertBefore(comment, nods[i].firstChild);
+
+  }
+  }
+  
+  function plantHTML(key,value) {
+   console.log("update!");
+   var nods = document.getElementsByClassName("branch_html_" + key);
+   var tempstr = "";
+   var tempcomment = "";
+   var tempcomment2 = "";
+   var comment = "";
+   // get elements by class name branch_key
+   for (i = 0;i < nods.length;i++) {
+   	tempcomment = nods[i].childNodes[0].nodeValue;
+
+    comment = document.createComment(tempcomment);
+  
+    tempstr = tempcomment.replace("{$"+ key +"}",value);
+    nods[i].innerHTML = tempstr;
+    nods[i].insertBefore(comment, nods[i].firstChild);
+  	
+   }
+  }
+  
+  function climbABranch(bran) {
+   	for (var i in bran) {
+ 			console.log("i: " + i);
+      console.log("bran[i]: " + bran[i]);
+		plantHTML(i,bran[i]);
+    }
+  
+  
+  }
+  
+  
+  // initBranches();
