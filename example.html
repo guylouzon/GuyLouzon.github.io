@@ -1,25 +1,35 @@
 <html>
 <head>
-<script languange="text/javascript" src="branches.js">
-
-</script>
+	<!-- script type="text/javascript" src="https://github.com/GuyLou/branches.js/raw/master/branches.js"></script -->
+	<script type="text/javascript" src="branches.js"></script>
 </head>
 <body>
-<p>header</p>
-<button onclick="plantHTML('class1','variable','hello world !');">Try</button>
-<button onclick="plantAttrib('class2','link','point');">Try again</button>
-<div class="class1 a">Class 1 a, {$varb}</div>
-<div class="class2">Class 2</div>
-<div class="class1 b">Class 1 b, {$varb}</div>
-<a href="#{$link}" class="class1 class2">{$varb}</a>
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<div id="point">#point</div>
+<h5 class="branches">{$langselect}</h5>
+<div id="menu">
+
+<a href="#" OnClick="climbABranch(en);">en</a>
+<a href="#" OnClick="climbABranch(he);">he</a>
+<a href="#" OnClick="climbABranch(es);">es</a>
+</div>
+
+<div id="content" >
+<span class="branches">{$helloworld}</span><br />
+
+<span class="branches">{$loremipsom}
+
+Lorem ipsum dolor sit amet, dicta phaedrum disputationi eu cum. Sed at solum iudicabit. Assum reprehendunt ei sea, id his ubique cetero. Vis principes delicatissimi te. Vivendo dolores qualisque usu ei.
+
+</span><br />
+
+</div>
+
 </body>
+<script type="text/javascript">
+
+	var en = {"langselect":"Please select the language based on its symbol","helloworld":"Hello World !","loremipsom":"Lorem Ipsom is always in latin ;)"};
+	var he = {"langselect":"אנא בחר את השפה בהתאם לסמלה","helloworld":"שלום עולם!","loremipsom":"לורם איפסום הוא תמיד בלטינית ;)"};
+	var es = {"langselect":"Por favor selecciona la idioma preferida, por su simbolo","helloworld":"Hola Mundo !","loremipsom":"Lorem Ipsom es siempre en latin "};
+	initBranches();
+	climbABranch(en);	
+</script>
 </html>
