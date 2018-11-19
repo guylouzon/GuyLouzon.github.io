@@ -11,10 +11,11 @@ function initBranches() {
 
 	  tempstr = nods[i].innerHTML;
 	  var varNames = tempstr.match(/\{\$(.*?)\}/i); // match groups! use exec
-	  nods[i].classList.add("branch_html_" + varNames[1]);
+	  if (varNames !== null) {
+		nods[i].classList.add("branch_html_" + varNames[1]);
 		comment = document.createComment(tempstr);
 		nods[i].insertBefore(comment, nods[i].firstChild);
-	   
+	  }
 	 
 			if (nods[i].hasAttributes()) {
 				var attribs = nods[i].attributes;
