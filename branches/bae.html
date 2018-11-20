@@ -1,0 +1,115 @@
+﻿<html>
+<head>
+	<!-- script type="text/javascript" src="https://github.com/GuyLou/branches.js/raw/master/branches.js"></script -->
+	<script type="text/javascript" src="branches.js"></script>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+		<meta name="description" content="branches.js" />
+		<meta name="keywords" content="a script to plant and update variables inside an html" />
+
+
+		<!-- Twitter Card data -->
+		<meta name="twitter:card" content="summary" />
+		<meta name="twitter:site" content="Guy Louzon" />
+		<meta name="twitter:title" content="branches.js" />
+		<meta name="twitter:url" content="https://guylou.github.com/branches/"  />
+		<meta name="twitter:description" content="a script to plant and update variables inside an html" />
+		<meta name="twitter:creator" content="@guylouzon" />
+		<meta name="twitter:image" content="{$data['image_url']}" />
+
+		<!-- Open Graph data -->
+		<meta property="og:title" content="branches.js" />
+		<meta property="og:type" content="article" />
+		<meta property="og:url" content="https://guylou.github.com/branches/" />
+		<meta property="og:image" content="{$data['image_url']}" />
+		<meta property="og:description" content="a script to plant and update variables inside an html" /> 
+		<!-- meta property="og:site_name" content="" / -->
+		<!--meta property="fb:admins" content="Facebook numeric ID" / -->
+
+</head>
+
+<body>
+
+
+
+<nav class="navbar navbar-expand navbar-dark bg-info">
+      <a class="navbar-brand" href="#">BAE</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExample02" aria-controls="navbarsExample02" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarsExample02">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item active">
+            <a class="nav-link" href="#" OnClick="climbABranch(app1);">Google <span class="sr-only">(current)</span></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#" OnClick="climbABranch(app2);">Yandex</a>
+          </li>
+        </ul>
+        <form  class="form-inline my-2 my-md-0 branches" action="{$action}" method="GET">
+          <input class="form-control branches" type="text" name="{$iname}" placeholder="search">
+        </form>
+      </div>
+    </nav>
+    
+	<div class="mx-auto">
+		<div class="card mb-3 border-light" >
+			<div class="card-header branches">
+				branches.js {$langpresents}:
+			</div>
+			<img class="rounded mx-auto d-block" src="bae.jpg" style="width: 100%; max-width: 394px;" >
+		</div>
+	</div>
+
+
+	<div class="card mb-3 mx-auto" style="width: 100%; max-width: 394px; border: none;">
+		<span class="branches">{$langselect}
+		<button type="button" class="btn btn-primary btn-xs" onClick="climbABranch(en);">en</button>
+		<button type="button" class="btn btn-info btn-xs" onClick="climbABranch(es);">es</button>
+		</span>
+	</div>
+
+	
+	<div class="card border-info mb-3 mx-auto" style="width: 100%; max-width: 394px;">
+	  <div class="card-header branches">{$langheader}</div>
+	  <div class="card-body text-info">
+		<h5 class="card-title branches">{$langtitle}</h5>
+		<p class="card-text branches">{$langdescription}</p>
+	  </div>
+	</div>
+
+	<div class="card border-info mb-3 mx-auto" style="width: 100%; max-width: 394px;">
+	  <div class="card-header text-center branches">{$langexample}: <button type="button" class="btn btn-danger" onClick="go(31);">31</button> <button  type="button" class="btn btn-warning" onClick="go(41);"> 41</button> <button type="button" class="btn btn-success"onClick="go(59);">59</button> </div>
+	  <div class="card-body text-info">
+		<span class="card-text branches">{$langtask}: </span><h5 class="card-title branches">{$title}</h5>
+		<span class="card-text branches">{$languser}: </span><span class="card-text branches">{$userId}</span><br />
+		<span class="card-text branches">{$langid}: </span><span class="card-text branches">{$id}</span><br />
+		<span class="card-text branches">{$langstatus}: </span><span class="card-text branches">{$completed}</span><br />
+	  </div>
+	</div>
+
+<script type="text/javascript">
+
+	var en = {"langselect":"language","langheader":"branches.js","langexample":"An extranal JSON example","langpresents":"presents","langtask":"task","langstatus":"is completed","langid":"id","languser":"user id","langtitle":"a script to plant and update variables inside an html", "langdescription":"build template as html based apps!<br />update the template headers - change the language<br />Change the page content without reloading the page<br /><br />plant variables inside the page<br />load the values using ajax or preset jsons"};
+	var es = {"langselect":"idioma","langheader":"branches.js","langexample":"Un ejemplo extranal de JSON","langpresents":"presenta","langtask":"task","langstatus":"esta completo","langid":"id","languser":"usuario","langtitle":"a script to plant and update variables inside an html", "langdescription":"build template as html based apps!<br />update the template headers - change the language<br />Change the page content without reloading the page<br /><br />plant variables inside the page<br />load the values using ajax or preset jsons","helloworld":"Hola Mundo !"};
+	var app1 = {"action":"https://www.google.com/search","placeholder":"google","iname":"q"};
+	var app2 = {"action":"https://www.yandex.ru/search/","placeholder":"Яндекс","iname":"text"};
+	
+	initBranches();
+	climbABranch(en);
+	climbABranch(app1);
+
+	function go(num) {
+	fetch('https://jsonplaceholder.typicode.com/todos/' + num)
+	  .then(response => response.json())
+	  .then(json => climbABranch(json))
+	 }
+	
+</script>
+
+
+
+</body>
+
+</html>
