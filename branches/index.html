@@ -1,13 +1,10 @@
 <html>
 <head>
-	<!-- script type="text/javascript" src="https://github.com/GuyLou/branches.js/raw/master/branches.js"></script -->
 	<script type="text/javascript" src="branches.js"></script>
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-
-	<title>branches.js example: Best App Ever!</title>
-		<meta name="description" content="a script to plant and update variables inside an html" />
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<meta name="keywords" content="branches, javascript, variables" />
+	<!-- link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous" -->
+	<link rel="stylesheet" href="bootstrap.min.css">
+		<meta name="description" content="branches.js" />
+		<meta name="keywords" content="a script to plant and update variables inside an html" />
 
 
 		<!-- Twitter Card data -->
@@ -65,8 +62,8 @@
 
 	<div class="card mb-3 mx-auto" style="width: 100%; max-width: 394px; border: none;">
 		<span class="branches">{$langselect}
-		<button type="button" class="btn btn-primary btn-xs" onClick="climbABranch(en);">en</button>
-		<button type="button" class="btn btn-info btn-xs" onClick="climbABranch(es);">es</button>
+		<button type="button" class="btn btn-primary btn-xs langsel" id="en">en</button>
+		<button type="button" class="btn btn-info btn-xs langsel" id="es" >es</button>
 		</span>
 	</div>
 
@@ -80,7 +77,7 @@
 	</div>
 
 	<div class="card border-info mb-3 mx-auto" style="width: 100%; max-width: 394px;">
-	  <div class="card-header text-center branches">{$langexample}: <button type="button" class="btn btn-danger" onClick="go(31);">31</button> <button  type="button" class="btn btn-warning" onClick="go(41);"> 41</button> <button type="button" class="btn btn-success"onClick="go(59);">59</button> </div>
+	  <div class="card-header text-center branches">{$langexample}: <button type="button" class="btn btn-danger go" id="31">31</button> <button  type="button" class="btn btn-warning go" id="41"> 41</button> <button type="button" class="btn btn-success go" id="59">59</button> </div>
 	  <div class="card-body text-info">
 		<span class="card-text branches">{$langtask}: </span><h5 class="card-title branches">{$title}</h5>
 		<span class="card-text branches">{$languser}: </span><span class="card-text branches">{$userId}</span><br />
@@ -91,20 +88,44 @@
 
 <script type="text/javascript">
 
-	var en = {"langselect":"language","langheader":"branches.js","langexample":"An extranal JSON example","langpresents":"presents","langtask":"task","langstatus":"is completed","langid":"id","languser":"user id","langtitle":"a script to plant and update variables inside an html", "langdescription":"build template as html based apps!<br />update the template headers - change the language<br />Change the page content without reloading the page<br /><br />plant variables inside the page<br />load the values using ajax or preset jsons"};
-	var es = {"langselect":"idioma","langheader":"branches.js","langexample":"Un ejemplo extranal de JSON","langpresents":"presenta","langtask":"task","langstatus":"esta completo","langid":"id","languser":"usuario","langtitle":"a script to plant and update variables inside an html", "langdescription":"build template as html based apps!<br />update the template headers - change the language<br />Change the page content without reloading the page<br /><br />plant variables inside the page<br />load the values using ajax or preset jsons","helloworld":"Hola Mundo !"};
-	var app1 = {"action":"https://www.google.com/search","placeholder":"google","iname":"q"};
-	var app2 = {"action":"https://www.yandex.ru/search/","placeholder":"Яндекс","iname":"text"};
+    (function(){
 	
-	initBranches();
-	climbABranch(en);
-	climbABranch(app1);
+		var branch = new branches();
 
-	function go(num) {
-	fetch('https://jsonplaceholder.typicode.com/todos/' + num)
-	  .then(response => response.json())
-	  .then(json => climbABranch(json))
-	 }
+		var en = {"langselect":"language","langheader":"branches.js","langexample":"An extranal JSON example","langpresents":"presents","langtask":"task","langstatus":"is completed","langid":"id","languser":"user id","langtitle":"a script to plant and update variables inside an html", "langdescription":"build template as html based apps!<br />update the template headers - change the language<br />Change the page content without reloading the page<br /><br />plant variables inside the page<br />load the values using ajax or preset jsons"};
+		var es = {"langselect":"idioma","langheader":"branches.js","langexample":"Un ejemplo extranal de JSON","langpresents":"presenta","langtask":"task","langstatus":"esta completo","langid":"id","languser":"usuario","langtitle":"a script to plant and update variables inside an html", "langdescription":"build template as html based apps!<br />update the template headers - change the language<br />Change the page content without reloading the page<br /><br />plant variables inside the page<br />load the values using ajax or preset jsons","helloworld":"Hola Mundo !"};
+		var app1 = {"action":"https://www.google.com/search","placeholder":"google","iname":"q"};
+		var app2 = {"action":"https://www.yandex.ru/search/","placeholder":"Яндекс","iname":"text"};
+
+		var buttons = document.getElementsByClassName('langsel');
+			console.log('langsel ' + buttons);
+		var i = 0;
+		for (let i = 0; i < buttons.length; i++) {
+			(function(){
+			var j = i;
+			buttons[j].addEventListener('click', function() { alert("hello world " + j) },false); //branch.climbABranch(buttons[j].id)
+		}());
+		}
+		
+		var buttons = document.getElementsByClassName('go');
+		for (let i = 0; i < buttons.length; i++) {
+			(function(){
+			var j = i;
+			buttons[j].addEventListener('click', function() { alert("hello world " + buttons[j].id) },false); // go(buttons[j].id)
+			}());
+		}
+		/*
+		branch.climbABranch(en);
+		branch.climbABranch(app1);
+		go(123);
+
+		function go(num) {
+		fetch('https://jsonplaceholder.typicode.com/todos/' + num)
+		  .then(response => response.json())
+		  .then(json => branch.climbABranch(json))
+		 }
+*/
+    })();
 	
 </script>
 
