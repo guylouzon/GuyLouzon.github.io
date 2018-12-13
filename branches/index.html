@@ -111,7 +111,10 @@
 		for (let i = 0; i < buttons.length; i++) {
 			(function(){
 			var j = i;
-			buttons[j].addEventListener('click', function() { alert("hello world " + buttons[j].id) },false); // go(buttons[j].id)
+			buttons[j].addEventListener('click', function() { 		fetch('https://jsonplaceholder.typicode.com/todos/' + buttons[j].id)
+		  .then(response => response.json())
+		  .then(json => branch.climbABranch(json))
+									},false); // go(buttons[j].id)
 			}());
 		}
 		/*
