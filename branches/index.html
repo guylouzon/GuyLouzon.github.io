@@ -106,7 +106,7 @@
 			var j = i;
 			buttons[j].addEventListener('click', function() {
 				alert("hello world " + j);
-				branch.method.call(branch, buttons[j].id);
+				branch.climbABranch.call(branch, buttons[j].id);
 									},false); //branch.climbABranch(buttons[j].id)
 		}());
 		}
