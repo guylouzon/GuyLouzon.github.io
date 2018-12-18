@@ -1,6 +1,6 @@
 <html>
 <head>
-	<script type="text/javascript" src="branches.js"></script>
+	<script type="text/javascript" src="https://raw.githubusercontent.com/GuyLou/branches.js/master/branches.js"></script>
 	<!-- link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous" -->
 	<link rel="stylesheet" href="bootstrap.min.css">
 		<meta name="description" content="branches.js" />
@@ -103,7 +103,10 @@
 		for (let i = 0; i < buttons.length; i++) {
 			(function(){
 			var j = i;
-			buttons[j].addEventListener('click', function() { alert("hello world " + j) },false); //branch.climbABranch(buttons[j].id)
+			buttons[j].addEventListener('click', function() {
+				alert("hello world " + j);
+				ret = branch.climbABranch(buttons[j].id);
+									},false); //branch.climbABranch(buttons[j].id)
 		}());
 		}
 		
@@ -122,11 +125,7 @@
 		branch.climbABranch(app1);
 		go(123);
 
-		function go(num) {
-		fetch('https://jsonplaceholder.typicode.com/todos/' + num)
-		  .then(response => response.json())
-		  .then(json => branch.climbABranch(json))
-		 }
+
 */
     })();
 	
