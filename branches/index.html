@@ -101,7 +101,7 @@
 		var buttons = document.getElementsByClassName('langsel');
 			console.log('langsel ' + buttons);
 		var i = 0;
-		for (let i = 0; i < buttons.length; i++) {
+		for (i = 0; i < buttons.length; i++) {
 			(function(){
 			var j = i;
 			buttons[j].addEventListener('click', function() {
@@ -112,7 +112,7 @@
 		}
 		
 		var buttons = document.getElementsByClassName('go');
-		for (let i = 0; i < buttons.length; i++) {
+		for (i = 0; i < buttons.length; i++) {
 			(function(){
 			var j = i;
 			buttons[j].addEventListener('click', function() { 		fetch('https://jsonplaceholder.typicode.com/todos/' + buttons[j].id)
