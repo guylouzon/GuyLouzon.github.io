@@ -91,7 +91,7 @@
 
     (function(){
 	
-		var branch = new branches();
+		var branch0 = new branches();
 
 		var en = {"langselect":"language","langheader":"branches.js","langexample":"An extranal JSON example","langpresents":"presents","langtask":"task","langstatus":"is completed","langid":"id","languser":"user id","langtitle":"a script to plant and update variables inside an html", "langdescription":"build template as html based apps!<br />update the template headers - change the language<br />Change the page content without reloading the page<br /><br />plant variables inside the page<br />load the values using ajax or preset jsons"};
 		var es = {"langselect":"idioma","langheader":"branches.js","langexample":"Un ejemplo extranal de JSON","langpresents":"presenta","langtask":"task","langstatus":"esta completo","langid":"id","languser":"usuario","langtitle":"a script to plant and update variables inside an html", "langdescription":"build template as html based apps!<br />update the template headers - change the language<br />Change the page content without reloading the page<br /><br />plant variables inside the page<br />load the values using ajax or preset jsons","helloworld":"Hola Mundo !"};
@@ -106,7 +106,7 @@
 			var j = i;
 			buttons[j].addEventListener('click', function() {
 				alert("hello world " + j);
-				branch.climbABranch.call(branch, buttons[j].id);
+				branch0.climbABranch.call(branch, buttons[j].id);
 									},false); //branch.climbABranch(buttons[j].id)
 		}());
 		}
