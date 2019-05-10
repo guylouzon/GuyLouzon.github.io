@@ -17,8 +17,26 @@
 	.jumbotron {
 	  background-image: url("https://coverfiles.alphacoders.com/360/36044.jpg");
 	  background-size: cover;
-	  height: 50vh;
+	  
 	}
+		
+	.card-columns {
+	  @include media-breakpoint-only(sm) {
+	    column-count: 2;
+	  }
+	  @include media-breakpoint-only(md) {
+	    column-count: 2;
+	  }
+	}
+		
+	@media (min-aspect-ratio: 1/1) {
+	    .jumbotron {
+	         height: 30vh;
+	    }
+	    .jumbotron {
+	        height: 50vh;
+	    }
+
 	</style> 	
 
 </head>
