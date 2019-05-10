@@ -20,13 +20,20 @@
 	  
 	}
 		
-	.card-columns {
-	  @include media-breakpoint-only(sm) {
-	    column-count: 2;
-	  }
-	  @include media-breakpoint-only(md) {
-	    column-count: 2;
-	  }
+	@media (min-width: 34em) {
+	    .card-columns {
+		-webkit-column-count: 2;
+		-moz-column-count: 2;
+		column-count: 2;
+	    }
+	}
+
+	@media (min-width: 48em) {
+	    .card-columns {
+		-webkit-column-count: 3;
+		-moz-column-count: 3;
+		column-count: 3;
+	    }
 	}
 		
 	@media (min-aspect-ratio: 1/1) {
