@@ -1,0 +1,77 @@
+<html>
+<head>
+    <title>42 knots - search results webapp</title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+
+
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>	
+	
+    <link href="css/searchresults.css" rel="stylesheet">
+	<script src="js/branches.js"></script>
+    <script src="js/lostandfound.js"></script>
+
+	<style>
+	body, .container-fluid {
+	padding-top: 1em;
+	}	
+	</style> 	
+
+</head>
+<body>
+
+    <hgroup class="mb20">
+	    <div class="row" id="header">
+				<div class="col-xs-12 col-sm-12 col-md-3">
+				<a class="thumbnail"><img class="branches" src="{$image_url}"></a>
+			</div>
+			<div class="col-xs-12 col-sm-12 col-md-9 excerpet">
+				<h1 class="branches">{$title}</h1>
+				<h2 class="lead branches">{$description}</h2>
+				
+				
+				<div class="social-icons">
+                    <ul>
+                        <li style="text-align: justify;"><a href="#"><em></em><img src="https://www.cloudroya.com/apps/webapp/images/app_icon_256.png" alt="web app"></a></li>
+                        <li><a href="/42"><img src="icons/rss.jpg" alt="rss"></a></li>
+                        <li><a href="/42"><img src="icons/json.png" alt="json"></a></li>
+                        <li><a href="https://feedly.com/i/subscription/feed/" target="_blank"><img src="icons/feedly.png" alt="follow us in feedly"></a></li>
+                    </ul>
+                </div>
+				
+
+			</div>
+		</div>	
+	</hgroup>    
+
+<div class="container-fluid">
+	<div class="card-columns">
+
+	<div class="leaves" id="items">
+		<div class="card">
+			<img class="card-img-top" src="{$image_url}" alt="">
+			<div class="card-body">
+				<h5 class="card-title"><a href="{$guid}">{$title}</a></h5>
+				<p class="card-text">{$description}, {$pubDate}</p>
+			</div>
+		</div>
+	</div>
+	
+	</div>
+</div>
+<script type="text/javascript">
+        (function(){
+		// on load, set global vars and objects
+		
+		var branch = new branches();
+		var json0 = {};
+    branch.climbABranch(json0);
+		branch.leavesLuv('items',json0.items,0);
+	
+       
+
+        })();
+</script>
+</body>
+</html>
