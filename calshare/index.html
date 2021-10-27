@@ -48,6 +48,14 @@
                 width: 24px;
             }
 
+            .control-label {
+                font-size: 1.2em;
+            }
+
+            .form-control {
+                font-size: 16px;
+            }
+
         </style>
         <title>Calendar events share</title>
     </head>
@@ -88,8 +96,8 @@
                      <div class="col-md-6">
                         <div class="form-group">
                            <label class="control-label">From time</label>
-                           <div class='input-group date' id='datetimepicker1'>
-                              <input type='text' class="form-control" name="fromtime" id="fromtime">
+                           <div class="input-group date" id="datetimepicker1">
+                              <input type="text" class="form-control" name="fromtime" id="fromtime">
                               <span class="input-group-addon">
                               <span class="glyphicon glyphicon-calendar"></span>
                               </span>
@@ -97,8 +105,8 @@
                         </div>
                         <div class="form-group">
                             <label class="control-label">To time</label>
-                            <div class='input-group date' id='datetimepicker2'>
-                               <input type='text' class="form-control" name="totime" id="totime">
+                            <div class="input-group date" id="datetimepicker2">
+                               <input type="text" class="form-control" name="totime" id="totime">
                                <span class="input-group-addon">
                                <span class="glyphicon glyphicon-calendar"></span>
                                </span>
@@ -188,20 +196,21 @@
             $('#datetimepicker1').datetimepicker();
                     });
         $(function () {
-            $('#datetimepicker2').datetimepicker();
+            $('.datetimepicker2').datetimepicker();
         });
+
 
        
         $('.calshare').click(function() {
             if (webshare) {
                         console.log('webshare!');
-						const shareData = {url: window.location.href  + $('#fetchform').serialize()};
+						const shareData = {url: window.location.href + '?download&' + $('#fetchform').serialize()};
 						navigator.share(shareData)
 						.then(() => console.log('Successful share'))
 						.catch((error) => console.log('Error sharing', error));
 					} else {
 
-                        navigator.clipboard.writeText(window.location.href  + $('#fetchform').serialize()).then(function() {
+                        navigator.clipboard.writeText(window.location.href  + '?download&' +  $('#fetchform').serialize()).then(function() {
                         console.log('Async: Copying to clipboard was successful!');
                         }, function(err) {
                         console.error('Async: Could not copy text: ', err);
@@ -231,6 +240,3 @@
 
     </body>
 </html>
-
-
-
