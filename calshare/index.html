@@ -32,7 +32,7 @@
                 width: 100%;
             }
 
-            @media screen and (min-width: 768px) {
+            @media (min-width: 768px) {
                 .mobile {
                     display: none !important;
                 }
@@ -48,12 +48,12 @@
                 width: 24px;
             }
 
-            .control-label {
-                font-size: 1.5em;
+            label {
+                font-size: 1.2em;
             }
 
             .form-control {
-                font-size: 17px;
+                font-size: 15px;
             }
 
         </style>
@@ -199,8 +199,9 @@
         $(function () {
             $('#datetimepicker1').datetimepicker();
                     });
+
         $(function () {
-            $('.datetimepicker2').datetimepicker();
+            $('#datetimepicker2').datetimepicker();
         });
 
 
@@ -244,6 +245,3 @@
 
     </body>
 </html>
-
-
-
