@@ -56,8 +56,35 @@
                 font-size: 15px;
             }
 
+            .hidden {
+                display: none !important;
+            }
+
         </style>
         <title>Calendar events share</title>
+
+        <meta name="description" content="Share an event simply, with a click">
+
+        <meta name="keywords" content="Calendar, schedule, appointment, event, share, download, ical">
+    
+        <!-- Twitter Card data -->
+        <meta name="twitter:card" content="summary">
+        <meta name="twitter:title" content="Calendar events share">
+        <meta name="twitter:url" content="https://guylou.github.io/calshare/">
+        <meta name="twitter:description" content="Share an event simply, with a click">
+        <meta name="twitter:image" content="https://guylou.github.io/calshare/icons/calshare.png">
+    
+        <!-- Open Graph data -->
+        <meta property="og:title" content="Calendar events share">
+        <meta property="og:type" content="article" />
+        <meta property="og:url" content="https://guylou.github.io/calshare/">
+        <meta property="og:image" content="https://guylou.github.io/calshare/icons/calshare.png">
+        <meta property="og:description" content="Share an event simply, with a click">
+        <meta property="og:site_name" content="Calendar events share">
+        <!--meta property="fb:admins" content="Facebook numeric ID" / -->
+        <!-- default metas end -->
+
+
     </head>
     <body>
 
@@ -191,6 +218,12 @@
                 if(params['download'] !== undefined) {
                     createEvent();
                 }
+            }
+
+            if (webshare) {
+                $("#clipcopy").addClass("hidden");
+            } else {
+                $("#calshare").addClass("hidden");
             }
 
         });
