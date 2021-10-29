@@ -32,6 +32,8 @@
                 width: 100%;
             }
 
+            /*
+
             @media (min-width: 768px) {
                 .mobile {
                     display: none !important;
@@ -43,6 +45,7 @@
                     display: none !important;
                 }
             }
+            */
 
             .icons {
                 width: 24px;
@@ -58,6 +61,10 @@
 
             .hidden {
                 display: none !important;
+            }
+
+            .shown {
+                display: block !important;
             }
 
         </style>
@@ -222,8 +229,10 @@
 
             if (webshare) {
                 $("#clipcopy").addClass("hidden");
+                $("#calshare").addClass("shown");
             } else {
                 $("#calshare").addClass("hidden");
+                $("#clipcopy").addClass("shown");
             }
 
         });
