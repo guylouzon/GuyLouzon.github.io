@@ -189,6 +189,10 @@
     // });
 
 
+    $('#fromtime').on('change', function() {
+        $('#totime').val($('#fromtime').val());
+    });
+
    
     $('.calshare').click(function() {
         if (webshare) {
