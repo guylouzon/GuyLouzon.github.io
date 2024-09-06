@@ -1,0 +1,51 @@
+
+.container {
+    margin-top: 40px;
+    }
+
+.btn-main {
+    width: 100%;
+}
+
+.btn-secondary {
+    width: 100%;
+}
+
+/*
+
+@media (min-width: 768px) {
+    .mobile {
+        display: none !important;
+    }
+}
+
+@media (max-width: 767px) {
+    .notmobile {
+        display: none !important;
+    }
+}
+*/
+
+.icons {
+    width: 24px;
+}
+
+label {
+    font-size: 1.2em;
+}
+
+.form-control {
+    font-size: 15px;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.shown {
+    display: block !important;
+}
+
+.btn {
+    margin-top: 16px;
+}
