@@ -53,12 +53,12 @@
             margin: 0 0 15px 0;
             color: #2c3e50;
         }
-        .mystery-card img {
+        .mystery-card #mystery-image {
             width: 120px;
             height: 120px;
-            object-fit: cover;
             border-radius: 8px;
             border: 3px solid #3498db;
+            overflow: hidden;
         }
         .game-board {
             display: grid;
@@ -80,14 +80,14 @@
         .character-card:hover {
             transform: scale(1.05);
         }
-        .character-card img {
+        .character-svg {
             width: 80px;
             height: 80px;
-            object-fit: cover;
             border-radius: 4px;
             border: 2px solid #ddd;
+            overflow: hidden;
         }
-        .character-card.eliminated img {
+        .character-card.eliminated .character-svg {
             opacity: 0.3;
         }
         .character-card .overlay {
@@ -242,32 +242,147 @@
     </div>
 
     <script>
-        // Character data with image paths and names
+        // Character SVG rendering functions
+        function createCharacterSVG(character) {
+            const { gender, hairColor, hasGlasses, hasMustache, hasBeard, hasBald, hairStyle } = character;
+            
+            // Base colors
+            const skinTone = "#FFDBAC";
+            const glassesColor = "#333";
+            const facialHairColor = hairColor === "#FFFF00" ? "#DAA520" : hairColor;
+            
+            // SVG template
+            return `
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+                <!-- Background -->
+                <rect width="100" height="100" rx="10" fill="#EAEAEA"/>
+                
+                <!-- Neck -->
+                <rect x="40" y="80" width="20" height="15" fill="${skinTone}"/>
+                
+                <!-- Face -->
+                <circle cx="50" cy="50" r="30" fill="${skinTone}"/>
+                
+                <!-- Hair -->
+                ${renderHair(gender, hairColor, hasBald, hairStyle)}
+                
+                <!-- Eyes -->
+                <circle cx="40" cy="45" r="3" fill="#333"/>
+                <circle cx="60" cy="45" r="3" fill="#333"/>
+                
+                <!-- Nose -->
+                <path d="M50 50 Q53 58 50 60" stroke="#D9B18F" stroke-width="2" fill="none"/>
+                
+                <!-- Mouth -->
+                <path d="M40 65 Q50 70 60 65" stroke="#D9967E" stroke-width="2" fill="none"/>
+                
+                <!-- Glasses -->
+                ${hasGlasses ? renderGlasses() : ''}
+                
+                <!-- Mustache -->
+                ${hasMustache ? renderMustache(facialHairColor) : ''}
+                
+                <!-- Beard -->
+                ${hasBeard ? renderBeard(facialHairColor) : ''}
+                
+                <!-- Shirt collar -->
+                <path d="M35 95 L40 80 L60 80 L65 95" fill="#3498db"/>
+            </svg>
+            `;
+        }
+        
+        function renderHair(gender, hairColor, hasBald, hairStyle) {
+            if (hasBald) {
+                return `<ellipse cx="50" cy="25" rx="25" ry="10" fill="#EAEAEA" stroke="${hairColor}" stroke-width="2"/>`;
+            }
+            
+            if (gender === 'male') {
+                if (hairStyle === 'short') {
+                    return `
+                        <path d="M20 40 Q20 15 50 15 Q80 15 80 40" fill="${hairColor}"/>
+                    `;
+                } else if (hairStyle === 'wavy') {
+                    return `
+                        <path d="M20 45 Q20 15 50 10 Q80 15 80 45" fill="${hairColor}"/>
+                        <path d="M25 20 Q35 10 45 15 Q55 10 65 15 Q75 10 80 20" fill="${hairColor}"/>
+                    `;
+                } else {
+                    return `
+                        <path d="M20 40 Q20 15 50 15 Q80 15 80 40" fill="${hairColor}"/>
+                    `;
+                }
+            } else { // female
+                if (hairStyle === 'long') {
+                    return `
+                        <path d="M20 40 Q20 15 50 15 Q80 15 80 40" fill="${hairColor}"/>
+                        <path d="M15 40 Q15 80 25 85 M85 40 Q85 80 75 85" fill="none" stroke="${hairColor}" stroke-width="10"/>
+                    `;
+                } else if (hairStyle === 'bun') {
+                    return `
+                        <path d="M20 40 Q20 15 50 15 Q80 15 80 40" fill="${hairColor}"/>
+                        <circle cx="50" cy="15" r="12" fill="${hairColor}"/>
+                    `;
+                } else if (hairStyle === 'ponytail') {
+                    return `
+                        <path d="M20 40 Q20 15 50 15 Q80 15 80 40" fill="${hairColor}"/>
+                        <path d="M50 15 Q70 25 75 60" stroke="${hairColor}" stroke-width="10" fill="none"/>
+                    `;
+                } else {
+                    return `
+                        <path d="M20 40 Q20 15 50 15 Q80 15 80 40" fill="${hairColor}"/>
+                    `;
+                }
+            }
+        }
+        
+        function renderGlasses() {
+            return `
+                <rect x="28" y="42" width="18" height="12" rx="3" fill="none" stroke="#333" stroke-width="2"/>
+                <rect x="54" y="42" width="18" height="12" rx="3" fill="none" stroke="#333" stroke-width="2"/>
+                <line x1="46" y1="47" x2="54" y2="47" stroke="#333" stroke-width="2"/>
+                <line x1="28" y1="47" x2="20" y2="43" stroke="#333" stroke-width="2"/>
+                <line x1="72" y1="47" x2="80" y2="43" stroke="#333" stroke-width="2"/>
+            `;
+        }
+        
+        function renderMustache(color) {
+            return `
+                <path d="M40 60 Q50 65 60 60" fill="${color}"/>
+            `;
+        }
+        
+        function renderBeard(color) {
+            return `
+                <path d="M30 55 Q50 95 70 55" fill="${color}" fill-opacity="0.7"/>
+            `;
+        }
+        
+        // Character data with unique visual traits
         const characters = [
-            { id: 1, name: "Alex", imgPath: "/api/placeholder/80/80?text=Alex" },
-            { id: 2, name: "Alfred", imgPath: "/api/placeholder/80/80?text=Alfred" },
-            { id: 3, name: "Anita", imgPath: "/api/placeholder/80/80?text=Anita" },
-            { id: 4, name: "Anne", imgPath: "/api/placeholder/80/80?text=Anne" },
-            { id: 5, name: "Bernard", imgPath: "/api/placeholder/80/80?text=Bernard" },
-            { id: 6, name: "Bill", imgPath: "/api/placeholder/80/80?text=Bill" },
-            { id: 7, name: "Charles", imgPath: "/api/placeholder/80/80?text=Charles" },
-            { id: 8, name: "Claire", imgPath: "/api/placeholder/80/80?text=Claire" },
-            { id: 9, name: "David", imgPath: "/api/placeholder/80/80?text=David" },
-            { id: 10, name: "Eric", imgPath: "/api/placeholder/80/80?text=Eric" },
-            { id: 11, name: "Frans", imgPath: "/api/placeholder/80/80?text=Frans" },
-            { id: 12, name: "George", imgPath: "/api/placeholder/80/80?text=George" },
-            { id: 13, name: "Herman", imgPath: "/api/placeholder/80/80?text=Herman" },
-            { id: 14, name: "Joe", imgPath: "/api/placeholder/80/80?text=Joe" },
-            { id: 15, name: "Maria", imgPath: "/api/placeholder/80/80?text=Maria" },
-            { id: 16, name: "Max", imgPath: "/api/placeholder/80/80?text=Max" },
-            { id: 17, name: "Paul", imgPath: "/api/placeholder/80/80?text=Paul" },
-            { id: 18, name: "Peter", imgPath: "/api/placeholder/80/80?text=Peter" },
-            { id: 19, name: "Philip", imgPath: "/api/placeholder/80/80?text=Philip" },
-            { id: 20, name: "Richard", imgPath: "/api/placeholder/80/80?text=Richard" },
-            { id: 21, name: "Robert", imgPath: "/api/placeholder/80/80?text=Robert" },
-            { id: 22, name: "Sam", imgPath: "/api/placeholder/80/80?text=Sam" },
-            { id: 23, name: "Susan", imgPath: "/api/placeholder/80/80?text=Susan" },
-            { id: 24, name: "Tom", imgPath: "/api/placeholder/80/80?text=Tom" }
+            { id: 1, name: "Alex", gender: "male", hairColor: "#8B4513", hasGlasses: false, hasMustache: false, hasBeard: false, hasBald: false, hairStyle: "short" },
+            { id: 2, name: "Alfred", gender: "male", hairColor: "#D3D3D3", hasGlasses: true, hasMustache: true, hasBeard: false, hasBald: false, hairStyle: "short" },
+            { id: 3, name: "Anita", gender: "female", hairColor: "#FFD700", hasGlasses: false, hasMustache: false, hasBeard: false, hasBald: false, hairStyle: "long" },
+            { id: 4, name: "Anne", gender: "female", hairColor: "#8B4513", hasGlasses: true, hasMustache: false, hasBeard: false, hasBald: false, hairStyle: "bun" },
+            { id: 5, name: "Bernard", gender: "male", hairColor: "#000000", hasGlasses: false, hasMustache: false, hasBeard: true, hasBald: false, hairStyle: "short" },
+            { id: 6, name: "Bill", gender: "male", hairColor: "#FF0000", hasGlasses: false, hasMustache: false, hasBeard: false, hasBald: true, hairStyle: "short" },
+            { id: 7, name: "Charles", gender: "male", hairColor: "#FFFF00", hasGlasses: false, hasMustache: true, hasBeard: true, hasBald: false, hairStyle: "wavy" },
+            { id: 8, name: "Claire", gender: "female", hairColor: "#FF0000", hasGlasses: true, hasMustache: false, hasBeard: false, hasBald: false, hairStyle: "ponytail" },
+            { id: 9, name: "David", gender: "male", hairColor: "#FFFF00", hasGlasses: false, hasMustache: false, hasBeard: false, hasBald: false, hairStyle: "short" },
+            { id: 10, name: "Eric", gender: "male", hairColor: "#FFFFFF", hasGlasses: true, hasMustache: false, hasBeard: false, hasBald: true, hairStyle: "short" },
+            { id: 11, name: "Frans", gender: "male", hairColor: "#FF0000", hasGlasses: false, hasMustache: true, hasBeard: false, hasBald: false, hairStyle: "short" },
+            { id: 12, name: "George", gender: "male", hairColor: "#FFFFFF", hasGlasses: false, hasMustache: false, hasBeard: true, hasBald: false, hairStyle: "wavy" },
+            { id: 13, name: "Herman", gender: "male", hairColor: "#FF0000", hasGlasses: true, hasMustache: true, hasBeard: false, hasBald: false, hairStyle: "short" },
+            { id: 14, name: "Joe", gender: "male", hairColor: "#FFFF00", hasGlasses: true, hasMustache: false, hasBeard: false, hasBald: false, hairStyle: "short" },
+            { id: 15, name: "Maria", gender: "female", hairColor: "#8B4513", hasGlasses: false, hasMustache: false, hasBeard: false, hasBald: false, hairStyle: "long" },
+            { id: 16, name: "Max", gender: "male", hairColor: "#000000", hasGlasses: false, hasMustache: true, hasBeard: false, hasBald: false, hairStyle: "short" },
+            { id: 17, name: "Paul", gender: "male", hairColor: "#000000", hasGlasses: true, hasMustache: false, hasBeard: true, hasBald: false, hairStyle: "short" },
+            { id: 18, name: "Peter", gender: "male", hairColor: "#FFFFFF", hasGlasses: false, hasMustache: false, hasBeard: false, hasBald: true, hairStyle: "short" },
+            { id: 19, name: "Philip", gender: "male", hairColor: "#000000", hasGlasses: false, hasMustache: false, hasBeard: false, hasBald: false, hairStyle: "wavy" },
+            { id: 20, name: "Richard", gender: "male", hairColor: "#8B4513", hasGlasses: false, hasMustache: true, hasBeard: true, hasBald: false, hairStyle: "short" },
+            { id: 21, name: "Robert", gender: "male", hairColor: "#8B4513", hasGlasses: true, hasMustache: false, hasBeard: false, hasBald: false, hairStyle: "short" },
+            { id: 22, name: "Sam", gender: "male", hairColor: "#000000", hasGlasses: true, hasMustache: false, hasBeard: false, hasBald: true, hairStyle: "short" },
+            { id: 23, name: "Susan", gender: "female", hairColor: "#FFFF00", hasGlasses: true, hasMustache: false, hasBeard: false, hasBald: false, hairStyle: "bun" },
+            { id: 24, name: "Tom", gender: "male", hairColor: "#000000", hasGlasses: false, hasMustache: false, hasBeard: false, hasBald: false, hairStyle: "short" }
         ];
 
         // Game state variables
@@ -337,8 +452,11 @@
                     card.classList.add('eliminated');
                 }
                 
+                // Create SVG character image
+                const characterSVG = createCharacterSVG(character);
+                
                 card.innerHTML = `
-                    <img src="${character.imgPath}" alt="${character.name}">
+                    <div class="character-svg">${characterSVG}</div>
                     <div class="overlay"><span class="overlay-x">X</span></div>
                     <div class="character-name">${character.name}</div>
                 `;
@@ -353,7 +471,9 @@
         function updateMysteryCard() {
             const myCharacter = characters.find(char => char.id === myCharacterId);
             if (myCharacter) {
-                mysteryImage.src = myCharacter.imgPath;
+                // Replace the image with SVG
+                const characterSVG = createCharacterSVG(myCharacter);
+                mysteryImage.outerHTML = `<div id="mystery-image" style="width: 120px; height: 120px;">${characterSVG}</div>`;
                 mysteryName.textContent = myCharacter.name;
             }
         }
