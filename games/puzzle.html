@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device- , initial-scale=1.0">
+    <title>Enhanced Image Puzzle</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+            #puzzle-container {
+            width: 500px;
+            height: 500px;
+            position: relative;
+            margin-top: 20px;
+            border: 3px solid #333;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            background-color: #ddd;
+            overflow: hidden;
+        }
+        .puzzle-piece {
+            position: absolute;
+            border: 1px solid rgba(255,255,255,0.5);
+            box-shadow: 0 0 8px rgba(0,0,0,0.4);
+            cursor: move;
+            transition: transform 0.2s, box-shadow 0.2s;
+            background-size: cover;
+        }
+        .puzzle-piece:hover {
+            transform: scale(1.02);
+            z-index: 100;
+            box-shadow: 0 0 12px rgba(0,0,0,0.6);
+        }
+        .puzzle-piece.correct {
+            border: 1px solid rgba(0,255,0,0.5);
+            box-shadow: 0 0 8px rgba(0,255,0,0.4);
+        }
+        #controls {
+            margin: 20px 0;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #4285f4;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.2s;
+        }
+        button:hover {
+            background-color: #3b78e7;
+        }
+        #difficulty {
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+        #message {
+            margin: 15px 0;
+            padding: 10px 20px;
+            border-radius: 4px;
+            font-weight: bold;
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+        }
+        .loading {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255,255,255,0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .completed-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255,255,255,0.9);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            font-size: 24px;
+            font-weight: bold;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s;
+        }
+        .completed-overlay button {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Enhanced Image Puzzle</h1>
+    
+    <div id="controls">
+        <select id="difficulty">
+            <option value="3">Easy (3×3)</option>
+            <option value="4">Medium (4×4)</option>
+            <option value="5">Hard (5×5)</option>
+            <option value="6">Expert (6×6)</option>
+        </select>
+        <button id="new-image-btn">New Image</button>
+        <button id="shuffle-btn">Shuffle Pieces</button>
+        <button id="solve-btn">Solve Puzzle</button>
+    </div>
+    
+    <div id="message"></div>
+    
+    <div id="puzzle-container">
+        <div class="loading">Loading image...</div>
+        <div class="completed-overlay">
+            <p>Puzzle Completed! 🎉</p>
+            <button id="play-again-btn">Play Again</button>
+        </div>
+    </div>
+    
+    <script>
+        // Configuration
+        let ROWS = 3;
+        let COLS = 3;
+        const PUZZLE_WIDTH = 500;
+        const PUZZLE_HEIGHT = 500;
+        
+        // State
+        let pieces = [];
+        let correctPositions = 0;
+        let imageLoaded = false;
+        let puzzleContainer = document.getElementById('puzzle-container');
+        let completedOverlay = document.querySelector('.completed-overlay');
+        let messageElement = document.getElementById('message');
+        let currentImageUrl = '';
+        
+        // Sound effects
+        const createAudio = (src) => {
+            const audio = new Audio();
+            audio.volume = 0.3;
+            audio.src = src;
+            return audio;
+        };
+        
+        // We'll use emoji for sound effects instead of actual audio files
+        function playClickSound() {
+            showMessage("🔊 Click!", "info");
+        }
+        
+        function playSuccessSound() {
+            showMessage("🎵 Success!", "success");
+        }
+        
+        function playWinSound() {
+            showMessage("🎺 Congratulations!", "success");
+        }
+        
+        // Show message with animation
+        function showMessage(text, type) {
+            messageElement.textContent = text;
+            messageElement.className = type;
+            messageElement.style.opacity = 1;
+            
+            setTimeout(() => {
+                messageElement.style.opacity = 0;
+            }, 2000);
+        }
+        
+        // Get random image from Unsplash
+        function getRandomImage() {
+            const width = 500;
+            const height = 500;
+            // Using placeholder API instead of actual Unsplash API call
+            // In a real app, you would use your Unsplash API key like:
+            // return `https://api.unsplash.com/photos/random?client_id=YOUR_API_KEY&w=${width}&h=${height}`;
+            return `https://source.unsplash.com/random`;
+        }
+        
+        // Load new image and set up puzzle
+        function loadNewImage() {
+            // Clear existing puzzle
+            clearPuzzle();
+            
+            // Show loading
+            document.querySelector('.loading').style.display = 'flex';
+            
+            // Get new random image
+            currentImageUrl = getRandomImage();
+            
+            // Create image element to check when it's loaded
+            const img = new Image();
+            img.onload = function() {
+                document.querySelector('.loading').style.display = 'none';
+                imageLoaded = true;
+                initPuzzle();
+                shufflePieces();
+            };
+            img.onerror = function() {
+                document.querySelector('.loading').style.display = 'none';
+                showMessage("Error loading image. Trying again...", "error");
+                setTimeout(loadNewImage, 1000);
+            };
+            img.src = currentImageUrl;
+        }
+        
+        // Initialize puzzle
+        function initPuzzle() {
+            // Get difficulty settings
+            const difficultySelect = document.getElementById('difficulty');
+            ROWS = parseInt(difficultySelect.value);
+            COLS = parseInt(difficultySelect.value);
+            
+            // Piece dimensions
+            const PIECE_WIDTH = PUZZLE_WIDTH / COLS;
+            const PIECE_HEIGHT = PUZZLE_HEIGHT / ROWS;
+            
+            // Reset correctPositions count
+            correctPositions = 0;
+            
+            // Create puzzle pieces
+            for (let row = 0; row < ROWS; row++) {
+                for (let col = 0; col < COLS; col++) {
+                    const piece = document.createElement('div');
+                    piece.className = 'puzzle-piece';
+                    piece.style.width = PIECE_WIDTH + 'px';
+                    piece.style.height = PIECE_HEIGHT + 'px';
+                    
+                    // Store original correct position
+                    piece.dataset.row = row;
+                    piece.dataset.col = col;
+                    piece.dataset.correctX = col * PIECE_WIDTH + 'px';
+                    piece.dataset.correctY = row * PIECE_HEIGHT + 'px';
+                    
+                    // Set background image to show only a slice of the image
+                    piece.style.backgroundImage = `url(${currentImageUrl})`;
+                    piece.style.backgroundSize = `${PUZZLE_WIDTH}px ${PUZZLE_HEIGHT}px`;
+                    piece.style.backgroundPosition = `-${col * PIECE_WIDTH}px -${row * PIECE_HEIGHT}px`;
+                    
+                    // Position in the correct place initially
+                    piece.style.left = (col * PIECE_WIDTH) + 'px';
+                    piece.style.top = (row * PIECE_HEIGHT) + 'px';
+                    
+                    // Make draggable
+                    makeDraggable(piece);
+                    
+                    // Add to container and track
+                    puzzleContainer.appendChild(piece);
+                    pieces.push(piece);
+                }
+            }
+        }
+        
+        // Make an element draggable with snap-to-grid
+        function makeDraggable(element) {
+            let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+            let isDragging = false;
+            const pieceWidth = parseInt(element.style.width);
+            const pieceHeight = parseInt(element.style.height);
+            
+            element.onmousedown = dragMouseDown;
+            element.ontouchstart = dragTouchStart;
+            
+            function dragTouchStart(e) {
+                e.preventDefault();
+                const touch = e.touches[0];
+                dragStart(touch.clientX, touch.clientY);
+                
+                document.ontouchend = closeDragElement;
+                document.ontouchmove = elementTouchDrag;
+            }
+            
+            function elementTouchDrag(e) {
+                e.preventDefault();
+                const touch = e.touches[0];
+                elementDragMove(touch.clientX, touch.clientY);
+            }
+            
+            function dragMouseDown(e) {
+                e.preventDefault();
+                dragStart(e.clientX, e.clientY);
+                
+                document.onmouseup = closeDragElement;
+                document.onmousemove = elementDrag;
+            }
+            
+            function dragStart(clientX, clientY) {
+                playClickSound();
+                
+                // Remove the correct class if it exists
+                element.classList.remove('correct');
+                
+                // Get mouse position at start
+                pos3 = clientX;
+                pos4 = clientY;
+                
+                // Bring to front
+                element.style.zIndex = "10";
+                
+                // Scale up slightly
+                element.style.transform = "scale(1.05)";
+                
+                isDragging = true;
+            }
+            
+            function elementDrag(e) {
+                e.preventDefault();
+                elementDragMove(e.clientX, e.clientY);
+            }
+            
+            function elementDragMove(clientX, clientY) {
+                if (!isDragging) return;
+                
+                // Calculate new position
+                pos1 = pos3 - clientX;
+                pos2 = pos4 - clientY;
+                pos3 = clientX;
+                pos4 = clientY;
+                
+                // Set new position
+                const newTop = element.offsetTop - pos2;
+                const newLeft = element.offsetLeft - pos1;
+                
+                // Constrain to puzzle boundaries
+                const boundedTop = Math.max(0, Math.min(newTop, PUZZLE_HEIGHT - pieceHeight));
+                const boundedLeft = Math.max(0, Math.min(newLeft, PUZZLE_WIDTH - pieceWidth));
+                
+                element.style.top = boundedTop + "px";
+                element.style.left = boundedLeft + "px";
+            }
+            
+            function closeDragElement() {
+                if (!isDragging) return;
+                
+                // Stop moving when mouse/touch is released
+                document.onmouseup = null;
+                document.onmousemove = null;
+                document.ontouchend = null;
+                document.ontouchmove = null;
+                
+                // Reset transformation
+                element.style.transform = "scale(1)";
+                
+                // Snap to grid
+                snapToGrid(element);
+                
+                setTimeout(() => {
+                    // Reset z-index
+                    element.style.zIndex = "1";
+                    isDragging = false;
+                    
+                    // Check if puzzle is complete
+                    checkPuzzleComplete();
+                }, 200);
+            }
+        }
+        
+        // Snap piece to nearest grid position
+        function snapToGrid(piece) {
+            const pieceWidth = parseInt(piece.style.width);
+            const pieceHeight = parseInt(piece.style.height);
+            
+            // Current position
+            const currentLeft = parseInt(piece.style.left);
+            const currentTop = parseInt(piece.style.top);
+            
+            // Find nearest grid position
+            const gridX = Math.round(currentLeft / pieceWidth) * pieceWidth;
+            const gridY = Math.round(currentTop / pieceHeight) * pieceHeight;
+            
+            // Animate to snap position
+            piece.style.transition = "left 0.2s, top 0.2s";
+            piece.style.left = gridX + "px";
+            piece.style.top = gridY + "px";
+            
+            // Check if piece is in correct position
+            const correctX = piece.dataset.correctX;
+            const correctY = piece.dataset.correctY;
+            
+            if (gridX + "px" === correctX && gridY + "px" === correctY) {
+                piece.classList.add('correct');
+                playSuccessSound();
+            }
+            
+            // Reset transition after snap animation
+            setTimeout(() => {
+                piece.style.transition = "transform 0.2s, box-shadow 0.2s";
+            }, 200);
+        }
+        
+        // Shuffle pieces randomly across the container
+        function shufflePieces() {
+            completedOverlay.style.opacity = 0;
+            completedOverlay.style.pointerEvents = 'none';
+            
+            // Remove all 'correct' classes
+            pieces.forEach(piece => {
+                piece.classList.remove('correct');
+            });
+            
+            correctPositions = 0;
+            
+            const pieceWidth = PUZZLE_WIDTH / COLS;
+            const pieceHeight = PUZZLE_HEIGHT / ROWS;
+            
+            pieces.forEach(piece => {
+                const randomX = Math.floor(Math.random() * (PUZZLE_WIDTH - pieceWidth));
+                const randomY = Math.floor(Math.random() * (PUZZLE_HEIGHT - pieceHeight));
+                
+                // Snap to grid for a cleaner look
+                const gridX = Math.round(randomX / pieceWidth) * pieceWidth;
+                const gridY = Math.round(randomY / pieceHeight) * pieceHeight;
+                
+                piece.style.transition = "left 0.4s, top 0.4s, transform 0.4s";
+                piece.style.left = gridX + 'px';
+                piece.style.top = gridY + 'px';
+                
+                // Random slight rotation for extra challenge
+                const randomRotation = Math.floor(Math.random() * 20) - 10;
+                piece.style.transform = `rotate(${randomRotation}deg)`;
+                
+                // Reset transition after shuffle animation
+                setTimeout(() => {
+                    piece.style.transition = "transform 0.2s, box-shadow 0.2s";
+                }, 400);
+            });
+            
+            showMessage("Puzzle shuffled! Start solving!", "info");
+        }
+        
+        // Solve the puzzle by putting pieces back in correct order
+        function solvePuzzle() {
+            pieces.forEach(piece => {
+                const row = parseInt(piece.dataset.row);
+                const col = parseInt(piece.dataset.col);
+                const pieceWidth = PUZZLE_WIDTH / COLS;
+                const pieceHeight = PUZZLE_HEIGHT / ROWS;
+                
+                // Animate back to original position
+                piece.style.transition = "all 0.8s ease-in-out";
+                piece.style.left = (col * pieceWidth) + 'px';
+                piece.style.top = (row * pieceHeight) + 'px';
+                piece.style.transform = 'rotate(0deg)';
+                piece.classList.add('correct');
+                
+                // Reset transition after animation
+                setTimeout(() => {
+                    piece.style.transition = "transform 0.2s, box-shadow 0.2s";
+                }, 800);
+            });
+            
+            // Show completed message after animation finishes
+            setTimeout(() => {
+                showPuzzleCompleted();
+            }, 1000);
+        }
+        
+        // Check if all pieces are in correct positions
+        function checkPuzzleComplete() {
+            correctPositions = 0;
+            
+            pieces.forEach(piece => {
+                const currentLeft = piece.style.left;
+                const currentTop = piece.style.top;
+                const correctX = piece.dataset.correctX;
+                const correctY = piece.dataset.correctY;
+                
+                if (currentLeft === correctX && currentTop === correctY) {
+                    correctPositions++;
+                }
+            });
+            
+            // If all pieces are correct, show completion
+            if (correctPositions === pieces.length) {
+                showPuzzleCompleted();
+            }
+        }
+        
+        // Show puzzle completed overlay and effects
+        function showPuzzleCompleted() {
+            playWinSound();
+            
+            // Make all pieces flat with no rotation
+            pieces.forEach(piece => {
+                piece.style.transform = 'rotate(0deg)';
+                piece.classList.add('correct');
+            });
+            
+            // Show completion overlay
+            completedOverlay.style.opacity = 1;
+            completedOverlay.style.pointerEvents = 'auto';
+        }
+        
+        // Clear all puzzle pieces
+        function clearPuzzle() {
+            while (puzzleContainer.querySelector('.puzzle-piece')) {
+                puzzleContainer.removeChild(puzzleContainer.querySelector('.puzzle-piece'));
+            }
+            pieces = [];
+            correctPositions = 0;
+        }
+        
+        // Event listeners
+        document.getElementById('new-image-btn').addEventListener('click', loadNewImage);
+        document.getElementById('shuffle-btn').addEventListener('click', shufflePieces);
+        document.getElementById('solve-btn').addEventListener('click', solvePuzzle);
+        document.getElementById('play-again-btn').addEventListener('click', shufflePieces);
+        document.getElementById('difficulty').addEventListener('change', () => {
+            if (imageLoaded) {
+                clearPuzzle();
+                initPuzzle();
+                shufflePieces();
+            }
+        });
+        
+        // Initialize when page loads
+        window.onload = function() {
+            loadNewImage();
+        };
+    </script>
+</body>
+</html>
