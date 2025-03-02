@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guess Who Game</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .game-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .header {
+            display: flex;
+            flex-direction: column;
+            background-color: #2c3e50;
+            padding: 15px;
+            border-radius: 8px;
+            color: white;
+        }
+        h1 {
+            margin: 0 0 15px 0;
+            font-size: 24px;
+            text-align: center;
+        }
+        .mystery-card {
+            background-color: white;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        @media (min-width: 768px) {
+            .header {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+            }
+            h1 {
+                margin: 0;
+            }
+        }
+        .mystery-card h2 {
+            margin: 0 0 15px 0;
+            color: #2c3e50;
+        }
+        .mystery-card #mystery-image {
+            width: 120px;
+            height: 120px;
+            border-radius: 8px;
+            border: 3px solid #3498db;
+            overflow: hidden;
+        }
+        .game-board {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 15px;
+            background-color: white;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .character-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            transition: transform 0.2s;
+            position: relative;
+        }
+        .character-card:hover {
+            transform: scale(1.05);
+        }
+        .character-svg {
+            width: 80px;
+            height: 80px;
+            border-radius: 4px;
+            border: 2px solid #ddd;
+            overflow: hidden;
+        }
+        .character-card.eliminated .character-svg {
+            opacity: 0.3;
+        }
+        .character-card .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(231, 76, 60, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            border-radius: 4px;
+        }
+        .character-card.eliminated .overlay {
+            display: flex;
+        }
+        .character-card .overlay i {
+            color: white;
+            font-size: 24px;
+        }
+        .character-name {
+            margin-top: 5px;
+            font-size: 12px;
+            text-align: center;
+            color: #333;
+        }
+        .actions {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            width: 100%;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.2s;
+            font-size: 14px;
+            text-align: center;
+            white-space: nowrap;
+        }
+        @media (min-width: 768px) {
+            .actions {
+                display: flex;
+                gap: 10px;
+                width: auto;
+            }
+            button {
+                padding: 10px 15px;
+                font-size: 16px;
+            }
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .share-link {
+            padding: 15px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+        .hidden {
+            display: none;
+        }
+        .overlay-x {
+            font-size: 24px;
+            color: white;
+            font-weight: bold;
+        }
+        .instructions {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .instructions h2 {
+            color: #2c3e50;
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+        .instructions ul, .instructions ol {
+            margin-top: 0;
+            padding-left: 20px;
+        }
+        .instructions li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="header">
+            <h1>Guess Who?</h1>
+            <div class="actions">
+                <button id="new-game-btn">New Game</button>
+                <button id="generate-link-btn">Generate Link for Opponent</button>
+                <button id="reset-board-btn">Reset Board</button>
+                <button id="toggle-instructions-btn">Show Instructions</button>
+            </div>
+        </div>
+        
+        <div class="instructions hidden" id="instructions-container">
+            <div class="instructions-content">
+                <h2>Game Features</h2>
+                <ul>
+                    <li><strong>Random Character Selection:</strong> The game randomly selects two characters - one for you and one for your opponent.</li>
+                    <li><strong>Character Board:</strong> Displays a grid of all available character images that you can click to eliminate/restore.</li>
+                    <li><strong>Mystery Card:</strong> Shows your assigned character at the top of the screen.</li>
+                    <li><strong>Link Sharing:</strong> Generates a link for your opponent with the characters swapped so they see their character but not yours.</li>
+                </ul>
+                
+                <h2>How to Play</h2>
+                <ol>
+                    <li>Start a new game - the app will select a random character for you and your opponent</li>
+                    <li>Click "Generate Link for Opponent" and share that link with your friend</li>
+                    <li>Ask yes/no questions about your opponent's character</li>
+                    <li>Click on characters to eliminate ones that don't match the answers</li>
+                    <li>Continue until you can guess which character your opponent has</li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="mystery-card" id="mystery-card">
+            <h2>Your Mystery Person</h2>
+            <img id="mystery-image" src="/api/placeholder/120/120" alt="Mystery character">
+            <p id="mystery-name">Character Name</p>
+        </div>
+
+        <div class="share-link hidden" id="share-link-container">
+            <h3>Share this link with your opponent:</h3>
+            <input type="text" id="share-link" readonly>
+            <button id="copy-link-btn">Copy Link</button>
+        </div>
+
+        <div class="game-board" id="game-board">
+            <!-- Character cards will be generated here -->
+        </div>
+    </div>
+
+    <script>
+        // Character SVG rendering functions
+        function createCharacterSVG(character) {
+            const { gender, hairColor, hasGlasses, hasMustache, hasBeard, hasBald, hairStyle } = character;
+            
+            // Base colors
+            const skinTone = "#FFDBAC";
+            const glassesColor = "#333";
+            const facialHairColor = hairColor === "#FFFF00" ? "#DAA520" : hairColor;
+            
+            // SVG template
+            return `
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+                <!-- Background -->
+                <rect width="100" height="100" rx="10" fill="#EAEAEA"/>
+                
+                <!-- Neck -->
+                <rect x="40" y="80" width="20" height="15" fill="${skinTone}"/>
+                
+                <!-- Face -->
+                <circle cx="50" cy="50" r="30" fill="${skinTone}"/>
+                
+                <!-- Hair -->
+                ${renderHair(gender, hairColor, hasBald, hairStyle)}
+                
+                <!-- Eyes -->
+                <circle cx="40" cy="45" r="3" fill="#333"/>
+                <circle cx="60" cy="45" r="3" fill="#333"/>
+                
+                <!-- Nose -->
+                <path d="M50 50 Q53 58 50 60" stroke="#D9B18F" stroke-width="2" fill="none"/>
+                
+                <!-- Mouth -->
+                <path d="M40 65 Q50 70 60 65" stroke="#D9967E" stroke-width="2" fill="none"/>
+                
+                <!-- Glasses -->
+                ${hasGlasses ? renderGlasses() : ''}
+                
+                <!-- Mustache -->
+                ${hasMustache ? renderMustache(facialHairColor) : ''}
+                
+                <!-- Beard -->
+                ${hasBeard ? renderBeard(facialHairColor) : ''}
+                
+                <!-- Shirt collar -->
+                <path d="M35 95 L40 80 L60 80 L65 95" fill="#3498db"/>
+            </svg>
+            `;
+        }
+        
+        function renderHair(gender, hairColor, hasBald, hairStyle) {
+            if (hasBald) {
+                return `<ellipse cx="50" cy="25" rx="25" ry="10" fill="#EAEAEA" stroke="${hairColor}" stroke-width="2"/>`;
+            }
+            
+            if (gender === 'male') {
+                if (hairStyle === 'short') {
+                    return `
+                        <path d="M20 40 Q20 15 50 15 Q80 15 80 40" fill="${hairColor}"/>
+                    `;
+                } else if (hairStyle === 'wavy') {
+                    return `
+                        <path d="M20 45 Q20 15 50 10 Q80 15 80 45" fill="${hairColor}"/>
+                        <path d="M25 20 Q35 10 45 15 Q55 10 65 15 Q75 10 80 20" fill="${hairColor}"/>
+                    `;
+                } else {
+                    return `
+                        <path d="M20 40 Q20 15 50 15 Q80 15 80 40" fill="${hairColor}"/>
+                    `;
+                }
+            } else { // female
+                if (hairStyle === 'long') {
+                    return `
+                        <path d="M20 40 Q20 15 50 15 Q80 15 80 40" fill="${hairColor}"/>
+                        <path d="M15 40 Q15 80 25 85 M85 40 Q85 80 75 85" fill="none" stroke="${hairColor}" stroke-width="10"/>
+                    `;
+                } else if (hairStyle === 'bun') {
+                    return `
+                        <path d="M20 40 Q20 15 50 15 Q80 15 80 40" fill="${hairColor}"/>
+                        <circle cx="50" cy="15" r="12" fill="${hairColor}"/>
+                    `;
+                } else if (hairStyle === 'ponytail') {
+                    return `
+                        <path d="M20 40 Q20 15 50 15 Q80 15 80 40" fill="${hairColor}"/>
+                        <path d="M50 15 Q70 25 75 60" stroke="${hairColor}" stroke-width="10" fill="none"/>
+                    `;
+                } else {
+                    return `
+                        <path d="M20 40 Q20 15 50 15 Q80 15 80 40" fill="${hairColor}"/>
+                    `;
+                }
+            }
+        }
+        
+        function renderGlasses() {
+            return `
+                <rect x="28" y="42" width="18" height="12" rx="3" fill="none" stroke="#333" stroke-width="2"/>
+                <rect x="54" y="42" width="18" height="12" rx="3" fill="none" stroke="#333" stroke-width="2"/>
+                <line x1="46" y1="47" x2="54" y2="47" stroke="#333" stroke-width="2"/>
+                <line x1="28" y1="47" x2="20" y2="43" stroke="#333" stroke-width="2"/>
+                <line x1="72" y1="47" x2="80" y2="43" stroke="#333" stroke-width="2"/>
+            `;
+        }
+        
+        function renderMustache(color) {
+            return `
+                <path d="M40 60 Q50 65 60 60" fill="${color}"/>
+            `;
+        }
+        
+        function renderBeard(color) {
+            return `
+                <path d="M30 55 Q50 95 70 55" fill="${color}" fill-opacity="0.7"/>
+            `;
+        }
+        
+        // Character data with unique visual traits
+        const characters = [
+            { id: 1, name: "Alex", gender: "male", hairColor: "#8B4513", hasGlasses: false, hasMustache: false, hasBeard: false, hasBald: false, hairStyle: "short" },
+            { id: 2, name: "Alfred", gender: "male", hairColor: "#D3D3D3", hasGlasses: true, hasMustache: true, hasBeard: false, hasBald: false, hairStyle: "short" },
+            { id: 3, name: "Anita", gender: "female", hairColor: "#FFD700", hasGlasses: false, hasMustache: false, hasBeard: false, hasBald: false, hairStyle: "long" },
+            { id: 4, name: "Anne", gender: "female", hairColor: "#8B4513", hasGlasses: true, hasMustache: false, hasBeard: false, hasBald: false, hairStyle: "bun" },
+            { id: 5, name: "Bernard", gender: "male", hairColor: "#000000", hasGlasses: false, hasMustache: false, hasBeard: true, hasBald: false, hairStyle: "short" },
+            { id: 6, name: "Bill", gender: "male", hairColor: "#FF0000", hasGlasses: false, hasMustache: false, hasBeard: false, hasBald: true, hairStyle: "short" },
+            { id: 7, name: "Charles", gender: "male", hairColor: "#FFFF00", hasGlasses: false, hasMustache: true, hasBeard: true, hasBald: false, hairStyle: "wavy" },
+            { id: 8, name: "Claire", gender: "female", hairColor: "#FF0000", hasGlasses: true, hasMustache: false, hasBeard: false, hasBald: false, hairStyle: "ponytail" },
+            { id: 9, name: "David", gender: "male", hairColor: "#FFFF00", hasGlasses: false, hasMustache: false, hasBeard: false, hasBald: false, hairStyle: "short" },
+            { id: 10, name: "Eric", gender: "male", hairColor: "#FFFFFF", hasGlasses: true, hasMustache: false, hasBeard: false, hasBald: true, hairStyle: "short" },
+            { id: 11, name: "Frans", gender: "male", hairColor: "#FF0000", hasGlasses: false, hasMustache: true, hasBeard: false, hasBald: false, hairStyle: "short" },
+            { id: 12, name: "George", gender: "male", hairColor: "#FFFFFF", hasGlasses: false, hasMustache: false, hasBeard: true, hasBald: false, hairStyle: "wavy" },
+            { id: 13, name: "Herman", gender: "male", hairColor: "#FF0000", hasGlasses: true, hasMustache: true, hasBeard: false, hasBald: false, hairStyle: "short" },
+            { id: 14, name: "Joe", gender: "male", hairColor: "#FFFF00", hasGlasses: true, hasMustache: false, hasBeard: false, hasBald: false, hairStyle: "short" },
+            { id: 15, name: "Maria", gender: "female", hairColor: "#8B4513", hasGlasses: false, hasMustache: false, hasBeard: false, hasBald: false, hairStyle: "long" },
+            { id: 16, name: "Max", gender: "male", hairColor: "#000000", hasGlasses: false, hasMustache: true, hasBeard: false, hasBald: false, hairStyle: "short" },
+            { id: 17, name: "Paul", gender: "male", hairColor: "#000000", hasGlasses: true, hasMustache: false, hasBeard: true, hasBald: false, hairStyle: "short" },
+            { id: 18, name: "Peter", gender: "male", hairColor: "#FFFFFF", hasGlasses: false, hasMustache: false, hasBeard: false, hasBald: true, hairStyle: "short" },
+            { id: 19, name: "Philip", gender: "male", hairColor: "#000000", hasGlasses: false, hasMustache: false, hasBeard: false, hasBald: false, hairStyle: "wavy" },
+            { id: 20, name: "Richard", gender: "male", hairColor: "#8B4513", hasGlasses: false, hasMustache: true, hasBeard: true, hasBald: false, hairStyle: "short" },
+            { id: 21, name: "Robert", gender: "male", hairColor: "#8B4513", hasGlasses: true, hasMustache: false, hasBeard: false, hasBald: false, hairStyle: "short" },
+            { id: 22, name: "Sam", gender: "male", hairColor: "#000000", hasGlasses: true, hasMustache: false, hasBeard: false, hasBald: true, hairStyle: "short" },
+            { id: 23, name: "Susan", gender: "female", hairColor: "#FFFF00", hasGlasses: true, hasMustache: false, hasBeard: false, hasBald: false, hairStyle: "bun" },
+            { id: 24, name: "Tom", gender: "male", hairColor: "#000000", hasGlasses: false, hasMustache: false, hasBeard: false, hasBald: false, hairStyle: "short" }
+        ];
+
+        // Game state variables
+        let myCharacterId = null;
+        let opponentCharacterId = null;
+        let eliminatedCharacters = new Set();
+
+        // DOM elements
+        const gameBoard = document.getElementById('game-board');
+        const mysteryImage = document.getElementById('mystery-image');
+        const mysteryName = document.getElementById('mystery-name');
+        const shareLinkContainer = document.getElementById('share-link-container');
+        const shareLinkInput = document.getElementById('share-link');
+        const newGameBtn = document.getElementById('new-game-btn');
+        const generateLinkBtn = document.getElementById('generate-link-btn');
+        const resetBoardBtn = document.getElementById('reset-board-btn');
+        const copyLinkBtn = document.getElementById('copy-link-btn');
+
+        // Initialize the game
+        function initGame() {
+            // Check URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            const myId = urlParams.get('my');
+            const opponentId = urlParams.get('opponent');
+
+            if (myId && opponentId) {
+                // Load game from URL params
+                myCharacterId = parseInt(myId);
+                opponentCharacterId = parseInt(opponentId);
+            } else {
+                // Start a new game with random characters
+                startNewGame();
+            }
+
+            // Render the game board
+            renderGameBoard();
+            updateMysteryCard();
+        }
+
+        // Start a new game with random characters
+        function startNewGame() {
+            eliminatedCharacters.clear();
+            
+            // Select two random characters
+            const shuffled = [...characters].sort(() => 0.5 - Math.random());
+            myCharacterId = shuffled[0].id;
+            opponentCharacterId = shuffled[1].id;
+
+            // Hide the share link
+            shareLinkContainer.classList.add('hidden');
+
+            // Update the UI
+            renderGameBoard();
+            updateMysteryCard();
+        }
+
+        // Render the game board with all characters
+        function renderGameBoard() {
+            gameBoard.innerHTML = '';
+            
+            characters.forEach(character => {
+                const card = document.createElement('div');
+                card.className = 'character-card';
+                card.dataset.id = character.id;
+                
+                if (eliminatedCharacters.has(character.id)) {
+                    card.classList.add('eliminated');
+                }
+                
+                // Create SVG character image
+                const characterSVG = createCharacterSVG(character);
+                
+                card.innerHTML = `
+                    <div class="character-svg">${characterSVG}</div>
+                    <div class="overlay"><span class="overlay-x">X</span></div>
+                    <div class="character-name">${character.name}</div>
+                `;
+                
+                card.addEventListener('click', () => toggleCharacter(character.id));
+                
+                gameBoard.appendChild(card);
+            });
+        }
+
+        // Update the mystery card with the player's character
+        function updateMysteryCard() {
+            const myCharacter = characters.find(char => char.id === myCharacterId);
+            if (myCharacter) {
+                // Replace the image with SVG
+                const characterSVG = createCharacterSVG(myCharacter);
+                mysteryImage.outerHTML = `<div id="mystery-image" style="width: 120px; height: 120px;">${characterSVG}</div>`;
+                mysteryName.textContent = myCharacter.name;
+            }
+        }
+
+        // Toggle a character's eliminated state
+        function toggleCharacter(id) {
+            if (eliminatedCharacters.has(id)) {
+                eliminatedCharacters.delete(id);
+            } else {
+                eliminatedCharacters.add(id);
+            }
+            
+            const card = document.querySelector(`.character-card[data-id="${id}"]`);
+            card.classList.toggle('eliminated');
+        }
+
+        // Generate a link for the opponent
+        function generateLink() {
+            const baseUrl = window.location.href.split('?')[0];
+            const link = `${baseUrl}?my=${opponentCharacterId}&opponent=${myCharacterId}`;
+            
+            shareLinkInput.value = link;
+            shareLinkContainer.classList.remove('hidden');
+        }
+
+        // Copy the share link to clipboard
+        function copyLink() {
+            shareLinkInput.select();
+            document.execCommand('copy');
+            
+            // Visual feedback
+            copyLinkBtn.textContent = 'Copied!';
+            setTimeout(() => {
+                copyLinkBtn.textContent = 'Copy Link';
+            }, 2000);
+        }
+
+        // Reset the board (clear all eliminations)
+        function resetBoard() {
+            eliminatedCharacters.clear();
+            document.querySelectorAll('.character-card').forEach(card => {
+                card.classList.remove('eliminated');
+            });
+        }
+
+        // Toggle instructions visibility
+        function toggleInstructions() {
+            const instructionsContainer = document.getElementById('instructions-container');
+            const toggleBtn = document.getElementById('toggle-instructions-btn');
+            
+            instructionsContainer.classList.toggle('hidden');
+            
+            if (instructionsContainer.classList.contains('hidden')) {
+                toggleBtn.textContent = 'Show Instructions';
+            } else {
+                toggleBtn.textContent = 'Hide Instructions';
+            }
+        }
+
+        // Event listeners
+        newGameBtn.addEventListener('click', startNewGame);
+        generateLinkBtn.addEventListener('click', generateLink);
+        resetBoardBtn.addEventListener('click', resetBoard);
+        copyLinkBtn.addEventListener('click', copyLink);
+        document.getElementById('toggle-instructions-btn').addEventListener('click', toggleInstructions);
+
+        // Initialize the game when the page loads
+        window.addEventListener('DOMContentLoaded', initGame);
+    </script>
+</body>
+</html>
