@@ -186,7 +186,7 @@
     </div>
     
     <div class="url-container">
-        <input type="text" id="custom-url-input" placeholder="Enter custom image URL..." value="dalle_unicorn.webp">
+        <input type="text" id="custom-url-input" placeholder="Enter custom image URL...">
         <button id="custom-image-btn">Use This Image</button>
     </div>
     
@@ -215,7 +215,7 @@
         let completedOverlay = document.querySelector('.completed-overlay');
         let messageElement = document.getElementById('message');
         let currentImageUrl = '';
-        let defaultImageUrl = 'dalle_unicorb.webp'; // Default local image
+        let defaultImageUrl = 'dalle_unicorn.webp'; // Default local image
         
         // Sound effects
         function playClickSound() {
@@ -245,8 +245,7 @@
         function getRandomImage() {
             const width = Math.floor(PUZZLE_WIDTH);
             const height = Math.floor(PUZZLE_HEIGHT);
-            // Using placeholder API instead of actual Unsplash API call
-            return `/api/placeholder/${width}/${height}`;
+            return `https://picsum.photos/${width}/${height}`;
         }
         
         // Update puzzle container size based on viewport
@@ -293,7 +292,7 @@
         }
         
         // Load image and set up puzzle
-        function loadImage(imageUrl) {
+        function loadImage(imageUrl = 'dalle_unicorn.webp') {
             // Clear existing puzzle
             clearPuzzle();
             
