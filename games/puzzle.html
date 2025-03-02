@@ -2,39 +2,23 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device- , initial-scale=1.0">
-    <meta name="description" content="Relax and enjoy a magical puzzle experience featuring a beautiful unicorn under a starry sky. Solve puzzles at your own pace!">
-    <meta name="keywords" content="puzzle game, unicorn, relaxing game, spa game, mindfulness, jigsaw, online puzzle">
-    <meta name="author" content="Guy Louzon using Claude.ai">
-    
-    <!-- Open Graph Meta Tags -->
-    <meta property="og:title" content="Unicorn Puzzle">
-    <meta property="og:description" content="Solve a stunning unicorn puzzle and unwind with this calming spa game.">
-    <meta property="og:image" content="https://guylouzon.github.io/games/dalle_unicorn.webp">
-    <meta property="og:url" content="https://guylouzon.github.io/games/puzzle.html">
-    <meta property="og:type" content="game">
-    
-    <!-- Twitter Card Meta Tags -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Unicorn Puzzle">
-    <meta name="twitter:description" content="Relax and solve a beautiful unicorn puzzle in this mindful spa game.">
-    <meta name="twitter:image" content="https://guylouzon.github.io/games/dalle_unicorn.webp">
-    <meta name="twitter:site" content="@guylouzon">
-
-    <title>Unicorn Puzzle</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced Image Puzzle</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 20px;
+            padding: 10px;
             background-color: #f5f5f5;
             color: #333;
+            margin: 0;
         }
-            #puzzle-container {
-            width: 500px;
-            height: 500px;
+        #puzzle-container {
+            width: 100%;
+            max-width: 500px;
+            aspect-ratio: 1 / 1;
             position: relative;
             margin-top: 20px;
             border: 3px solid #333;
@@ -60,6 +44,8 @@
             box-shadow: 0 0 8px rgba(0,255,0,0.4);
         }
         #controls {
+            width: 100%;
+            max-width: 500px;
             margin: 20px 0;
             display: flex;
             flex-wrap: wrap;
@@ -67,7 +53,7 @@
             gap: 10px;
         }
         button {
-            padding: 10px 20px;
+            padding: 10px 15px;
             background-color: #4285f4;
             color: white;
             border: none;
@@ -79,10 +65,17 @@
         button:hover {
             background-color: #3b78e7;
         }
-        #difficulty {
+        select, input {
             padding: 10px;
             border-radius: 4px;
             border: 1px solid #ccc;
+        }
+        #difficulty {
+            min-width: 100px;
+        }
+        #custom-url-input {
+            flex-grow: 1;
+            min-width: 150px;
         }
         #message {
             margin: 15px 0;
@@ -91,6 +84,9 @@
             font-weight: bold;
             opacity: 0;
             transition: opacity 0.5s;
+            text-align: center;
+            width: 100%;
+            max-width: 500px;
         }
         .success {
             background-color: #d4edda;
@@ -99,6 +95,10 @@
         .info {
             background-color: #d1ecf1;
             color: #0c5460;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
         }
         .loading {
             position: absolute;
@@ -135,6 +135,38 @@
         .completed-overlay button {
             margin-top: 20px;
         }
+        .url-container {
+            display: flex;
+            width: 100%;
+            max-width: 500px;
+            margin-top: 10px;
+            gap: 10px;
+        }
+        h1 {
+            font-size: 1.8rem;
+            margin: 10px 0;
+            text-align: center;
+        }
+        
+        /* Media queries for better mobile responsiveness */
+        @media (max-width: 600px) {
+            body {
+                padding: 5px;
+            }
+            #controls {
+                flex-direction: column;
+                align-items: center;
+            }
+            select, button, input {
+                width: 100%;
+            }
+            .url-container {
+                flex-direction: column;
+            }
+            h1 {
+                font-size: 1.5rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -147,9 +179,15 @@
             <option value="5">Hard (5×5)</option>
             <option value="6">Expert (6×6)</option>
         </select>
-        <button id="new-image-btn">New Image</button>
-        <button id="shuffle-btn">Shuffle Pieces</button>
-        <button id="solve-btn">Solve Puzzle</button>
+        <button id="default-image-btn">Default Image</button>
+        <button id="random-image-btn">Random Image</button>
+        <button id="shuffle-btn">Shuffle</button>
+        <button id="solve-btn">Solve</button>
+    </div>
+    
+    <div class="url-container">
+        <input type="text" id="custom-url-input" placeholder="Enter custom image URL...">
+        <button id="custom-image-btn">Use This Image</button>
     </div>
     
     <div id="message"></div>
@@ -166,8 +204,8 @@
         // Configuration
         let ROWS = 3;
         let COLS = 3;
-        const PUZZLE_WIDTH = 500;
-        const PUZZLE_HEIGHT = 500;
+        let PUZZLE_WIDTH = 500;
+        let PUZZLE_HEIGHT = 500;
         
         // State
         let pieces = [];
@@ -177,16 +215,9 @@
         let completedOverlay = document.querySelector('.completed-overlay');
         let messageElement = document.getElementById('message');
         let currentImageUrl = '';
+        let defaultImageUrl = 'dalle_unicorb.webp'; // Default local image
         
         // Sound effects
-        const createAudio = (src) => {
-            const audio = new Audio();
-            audio.volume = 0.3;
-            audio.src = src;
-            return audio;
-        };
-        
-        // We'll use emoji for sound effects instead of actual audio files
         function playClickSound() {
             showMessage("🔊 Click!", "info");
         }
@@ -210,26 +241,67 @@
             }, 2000);
         }
         
-        // Get random image from Unsplash
+        // Get random image
         function getRandomImage() {
-            const width = 500;
-            const height = 500;
+            const width = Math.floor(PUZZLE_WIDTH);
+            const height = Math.floor(PUZZLE_HEIGHT);
             // Using placeholder API instead of actual Unsplash API call
-            // In a real app, you would use your Unsplash API key like:
-            // return `https://api.unsplash.com/photos/random?client_id=YOUR_API_KEY&w=${width}&h=${height}`;
-            return `dalle_unicorn.webp`;
+            return `/api/placeholder/${width}/${height}`;
         }
         
-        // Load new image and set up puzzle
-        function loadNewImage() {
+        // Update puzzle container size based on viewport
+        function updatePuzzleSize() {
+            const containerWidth = puzzleContainer.offsetWidth;
+            PUZZLE_WIDTH = containerWidth;
+            PUZZLE_HEIGHT = containerWidth; // Keep it square
+            
+            // If we already have pieces, we need to resize them
+            if (pieces.length > 0 && imageLoaded) {
+                resizePieces();
+            }
+        }
+        
+        // Resize pieces when window size changes
+        function resizePieces() {
+            const pieceWidth = PUZZLE_WIDTH / COLS;
+            const pieceHeight = PUZZLE_HEIGHT / ROWS;
+            
+            pieces.forEach(piece => {
+                const row = parseInt(piece.dataset.row);
+                const col = parseInt(piece.dataset.col);
+                
+                // Update piece size
+                piece.style.width = pieceWidth + 'px';
+                piece.style.height = pieceHeight + 'px';
+                
+                // Update background size
+                piece.style.backgroundSize = `${PUZZLE_WIDTH}px ${PUZZLE_HEIGHT}px`;
+                
+                // Update background position
+                piece.style.backgroundPosition = `-${col * pieceWidth}px -${row * pieceHeight}px`;
+                
+                // Update correct position data
+                piece.dataset.correctX = col * pieceWidth + 'px';
+                piece.dataset.correctY = row * pieceHeight + 'px';
+                
+                // If piece is in correct position, update its position
+                if (piece.classList.contains('correct')) {
+                    piece.style.left = col * pieceWidth + 'px';
+                    piece.style.top = row * pieceHeight + 'px';
+                }
+            });
+        }
+        
+        // Load image and set up puzzle
+        function loadImage(imageUrl) {
             // Clear existing puzzle
             clearPuzzle();
             
             // Show loading
             document.querySelector('.loading').style.display = 'flex';
             
-            // Get new random image
-            currentImageUrl = getRandomImage();
+            // Store current image URL
+            currentImageUrl = imageUrl;
             
             // Create image element to check when it's loaded
             const img = new Image();
@@ -238,13 +310,17 @@
                 imageLoaded = true;
                 initPuzzle();
                 shufflePieces();
+                showMessage("New puzzle ready!", "success");
             };
             img.onerror = function() {
                 document.querySelector('.loading').style.display = 'none';
-                showMessage("Error loading image. Trying again...", "error");
-                setTimeout(loadNewImage, 1000);
+                showMessage("Error loading image. Please try another URL.", "error");
+                // If default image fails, try a placeholder
+                if (imageUrl === defaultImageUrl) {
+                    setTimeout(() => loadImage(getRandomImage()), 1000);
+                }
             };
-            img.src = currentImageUrl;
+            img.src = imageUrl;
         }
         
         // Initialize puzzle
@@ -254,9 +330,12 @@
             ROWS = parseInt(difficultySelect.value);
             COLS = parseInt(difficultySelect.value);
             
+            // Update puzzle size
+            updatePuzzleSize();
+            
             // Piece dimensions
-            const PIECE_WIDTH = PUZZLE_WIDTH / COLS;
-            const PIECE_HEIGHT = PUZZLE_HEIGHT / ROWS;
+            const pieceWidth = PUZZLE_WIDTH / COLS;
+            const pieceHeight = PUZZLE_HEIGHT / ROWS;
             
             // Reset correctPositions count
             correctPositions = 0;
@@ -266,23 +345,23 @@
                 for (let col = 0; col < COLS; col++) {
                     const piece = document.createElement('div');
                     piece.className = 'puzzle-piece';
-                    piece.style.width = PIECE_WIDTH + 'px';
-                    piece.style.height = PIECE_HEIGHT + 'px';
+                    piece.style.width = pieceWidth + 'px';
+                    piece.style.height = pieceHeight + 'px';
                     
                     // Store original correct position
                     piece.dataset.row = row;
                     piece.dataset.col = col;
-                    piece.dataset.correctX = col * PIECE_WIDTH + 'px';
-                    piece.dataset.correctY = row * PIECE_HEIGHT + 'px';
+                    piece.dataset.correctX = col * pieceWidth + 'px';
+                    piece.dataset.correctY = row * pieceHeight + 'px';
                     
                     // Set background image to show only a slice of the image
                     piece.style.backgroundImage = `url(${currentImageUrl})`;
                     piece.style.backgroundSize = `${PUZZLE_WIDTH}px ${PUZZLE_HEIGHT}px`;
-                    piece.style.backgroundPosition = `-${col * PIECE_WIDTH}px -${row * PIECE_HEIGHT}px`;
+                    piece.style.backgroundPosition = `-${col * pieceWidth}px -${row * pieceHeight}px`;
                     
                     // Position in the correct place initially
-                    piece.style.left = (col * PIECE_WIDTH) + 'px';
-                    piece.style.top = (row * PIECE_HEIGHT) + 'px';
+                    piece.style.left = (col * pieceWidth) + 'px';
+                    piece.style.top = (row * pieceHeight) + 'px';
                     
                     // Make draggable
                     makeDraggable(piece);
@@ -298,19 +377,21 @@
         function makeDraggable(element) {
             let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
             let isDragging = false;
-            const pieceWidth = parseInt(element.style.width);
-            const pieceHeight = parseInt(element.style.height);
+            let startX, startY;
             
-            element.onmousedown = dragMouseDown;
-            element.ontouchstart = dragTouchStart;
+            element.addEventListener('mousedown', dragMouseDown);
+            element.addEventListener('touchstart', dragTouchStart, { passive: false });
             
             function dragTouchStart(e) {
-                e.preventDefault();
+                e.preventDefault(); // Prevent scrolling while dragging
                 const touch = e.touches[0];
+                startX = touch.clientX;
+                startY = touch.clientY;
                 dragStart(touch.clientX, touch.clientY);
                 
-                document.ontouchend = closeDragElement;
-                document.ontouchmove = elementTouchDrag;
+                document.addEventListener('touchend', closeDragElement, { once: true });
+                document.addEventListener('touchcancel', closeDragElement, { once: true });
+                document.addEventListener('touchmove', elementTouchDrag, { passive: false });
             }
             
             function elementTouchDrag(e) {
@@ -321,10 +402,12 @@
             
             function dragMouseDown(e) {
                 e.preventDefault();
+                startX = e.clientX;
+                startY = e.clientY;
                 dragStart(e.clientX, e.clientY);
                 
-                document.onmouseup = closeDragElement;
-                document.onmousemove = elementDrag;
+                document.addEventListener('mouseup', closeDragElement, { once: true });
+                document.addEventListener('mousemove', elementDrag);
             }
             
             function dragStart(clientX, clientY) {
@@ -360,6 +443,10 @@
                 pos3 = clientX;
                 pos4 = clientY;
                 
+                // Get current piece dimensions
+                const pieceWidth = parseFloat(element.style.width);
+                const pieceHeight = parseFloat(element.style.height);
+                
                 // Set new position
                 const newTop = element.offsetTop - pos2;
                 const newLeft = element.offsetLeft - pos1;
@@ -372,14 +459,23 @@
                 element.style.left = boundedLeft + "px";
             }
             
-            function closeDragElement() {
-                if (!isDragging) return;
+            function closeDragElement(e) {
+                // Check if it was just a tap/click (no dragging)
+                const isJustClick = e.type === 'mouseup' && 
+                                   Math.abs(e.clientX - startX) < 5 && 
+                                   Math.abs(e.clientY - startY) < 5;
+                
+                if (!isDragging || isJustClick) {
+                    // Reset z-index and transform without snapping for clicks
+                    element.style.zIndex = "1";
+                    element.style.transform = "scale(1)";
+                    isDragging = false;
+                    return;
+                }
                 
                 // Stop moving when mouse/touch is released
-                document.onmouseup = null;
-                document.onmousemove = null;
-                document.ontouchend = null;
-                document.ontouchmove = null;
+                document.removeEventListener('mousemove', elementDrag);
+                document.removeEventListener('touchmove', elementTouchDrag);
                 
                 // Reset transformation
                 element.style.transform = "scale(1)";
@@ -400,12 +496,13 @@
         
         // Snap piece to nearest grid position
         function snapToGrid(piece) {
-            const pieceWidth = parseInt(piece.style.width);
-            const pieceHeight = parseInt(piece.style.height);
+            // Get current piece dimensions
+            const pieceWidth = parseFloat(piece.style.width);
+            const pieceHeight = parseFloat(piece.style.height);
             
             // Current position
-            const currentLeft = parseInt(piece.style.left);
-            const currentTop = parseInt(piece.style.top);
+            const currentLeft = parseFloat(piece.style.left);
+            const currentTop = parseFloat(piece.style.top);
             
             // Find nearest grid position
             const gridX = Math.round(currentLeft / pieceWidth) * pieceWidth;
@@ -417,10 +514,17 @@
             piece.style.top = gridY + "px";
             
             // Check if piece is in correct position
-            const correctX = piece.dataset.correctX;
-            const correctY = piece.dataset.correctY;
+            const correctX = parseFloat(piece.dataset.correctX);
+            const correctY = parseFloat(piece.dataset.correctY);
             
-            if (gridX + "px" === correctX && gridY + "px" === correctY) {
+            // Allow a small margin of error due to floating point
+            const isCorrectX = Math.abs(gridX - correctX) < 2;
+            const isCorrectY = Math.abs(gridY - correctY) < 2;
+            
+            if (isCorrectX && isCorrectY) {
+                // Ensure perfect alignment
+                piece.style.left = piece.dataset.correctX;
+                piece.style.top = piece.dataset.correctY;
                 piece.classList.add('correct');
                 playSuccessSound();
             }
@@ -503,12 +607,7 @@
             correctPositions = 0;
             
             pieces.forEach(piece => {
-                const currentLeft = piece.style.left;
-                const currentTop = piece.style.top;
-                const correctX = piece.dataset.correctX;
-                const correctY = piece.dataset.correctY;
-                
-                if (currentLeft === correctX && currentTop === correctY) {
+                if (piece.classList.contains('correct')) {
                     correctPositions++;
                 }
             });
@@ -543,8 +642,23 @@
             correctPositions = 0;
         }
         
+        // Load custom image from URL
+        function loadCustomImage() {
+            const urlInput = document.getElementById('custom-url-input');
+            const url = urlInput.value.trim();
+            
+            if (!url) {
+                showMessage("Please enter a valid image URL", "error");
+                return;
+            }
+            
+            loadImage(url);
+        }
+        
         // Event listeners
-        document.getElementById('new-image-btn').addEventListener('click', loadNewImage);
+        document.getElementById('default-image-btn').addEventListener('click', () => loadImage(defaultImageUrl));
+        document.getElementById('random-image-btn').addEventListener('click', () => loadImage(getRandomImage()));
+        document.getElementById('custom-image-btn').addEventListener('click', loadCustomImage);
         document.getElementById('shuffle-btn').addEventListener('click', shufflePieces);
         document.getElementById('solve-btn').addEventListener('click', solvePuzzle);
         document.getElementById('play-again-btn').addEventListener('click', shufflePieces);
@@ -556,9 +670,15 @@
             }
         });
         
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            updatePuzzleSize();
+        });
+        
         // Initialize when page loads
         window.onload = function() {
-            loadNewImage();
+            updatePuzzleSize();
+            loadImage(defaultImageUrl);
         };
     </script>
 </body>
