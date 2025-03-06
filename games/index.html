@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/react/17.0.2/umd/react.production.min.js" defer></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/17.0.2/umd/react-dom.production.min.js" defer></script>
-  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
   <div id="root"></div>
@@ -20,7 +20,7 @@
       return (
         <div className="bg-white shadow-lg rounded-xl p-6 transform transition-all duration-300 hover:scale-105 hover:shadow-xl">
           <div className={`mb-4 w-16 h-16 ${color} rounded-full flex items-center justify-center`}>
-            <Icon className="w-8 h-8 text-white" />
+            <i className="fa-solid fa-{icon}"></i>
           </div>
           <h3 className="text-xl font-bold mb-2 text-gray-800">{title}</h3>
           <p className="text-gray-600 mb-4">{description}</p>
@@ -35,25 +35,25 @@
     const GameLandingPage = () => {
       const games = [
         {
-          icon: Gamepad2,
+          icon: gamepad,
           title: "Arcade Classics",
           description: "Retro-inspired arcade games that will test your skills and reflexes.",
           color: "bg-red-500"
         },
         {
-          icon: Puzzle,
+          icon: puzzle-piece,
           title: "Brain Teasers",
           description: "Challenge your mind with intricate puzzles and logic games.",
           color: "bg-green-500"
         },
         {
-          icon: Target,
+          icon: bullseye,
           title: "Strategy Challenge",
           description: "Engage in strategic gameplay that requires careful planning.",
           color: "bg-purple-500"
         },
         {
-          icon: Rocket,
+          icon: rocket,
           title: "Adventure Quest",
           description: "Embark on epic journeys and explore immersive game worlds.",
           color: "bg-orange-500"
