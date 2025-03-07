@@ -9,9 +9,8 @@
     <!-- Include React and ReactDOM from CDN -->
     <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-    <!-- You would typically import lucide-react, but for a standalone page, we'll use inline SVGs or a simple icon replacement.
-         For simplicity in this standalone example, let's use placeholder text for icons.
-         In a real standalone scenario, you might consider embedding SVG icons directly or using a different icon library that's easier to include in a standalone HTML file. -->
+    <!-- Include Font Awesome CSS via CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
         /* Basic CSS for demonstration if Tailwind CDN doesn't load immediately */
         .shadow-lg { box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); }
@@ -80,33 +79,28 @@
     <script type="text/babel">
         // Game card component
         const GameCard = ({ iconName, title, description, color }) => {
-          // For standalone, we can't directly use lucide-react components.
-          // Let's use placeholder text for icons for this example.
-          const IconPlaceholder = ({name}) => <span>[{name} Icon]</span>;
-
-          let IconComponent;
+          let iconClass = "";
           switch(iconName) {
             case 'Gamepad2':
-              IconComponent = () => <IconPlaceholder name="Gamepad" />;
+              iconClass = "fa-solid fa-gamepad"; // Font Awesome class for gamepad
               break;
             case 'Puzzle':
-              IconComponent = () => <IconPlaceholder name="Puzzle" />;
+              iconClass = "fa-solid fa-puzzle-piece"; // Font Awesome class for puzzle
               break;
             case 'Target':
-              IconComponent = () => <IconPlaceholder name="Target" />;
+              iconClass = "fa-solid fa-bullseye"; // Font Awesome class for target
               break;
             case 'Rocket':
-              IconComponent = () => <IconPlaceholder name="Rocket" />;
+              iconClass = "fa-solid fa-rocket"; // Font Awesome class for rocket
               break;
             default:
-              IconComponent = () => <IconPlaceholder name="Icon" />;
+              iconClass = "fa-solid fa-question"; // Default icon if name is not recognized
           }
-
 
           return (
             React.createElement('div', {className: "bg-white shadow-lg rounded-xl p-6 transform transition-all duration-300 hover:scale-105 hover:shadow-xl"},
               React.createElement('div', {className: `mb-4 w-16 h-16 ${color} rounded-full flex items-center justify-center`},
-                React.createElement(IconComponent, {className: "w-8 h-8 text-white"}) // Using IconComponent here
+                React.createElement('i', {className: `${iconClass} w-8 h-8 text-white fa-xl`}) // Using Font Awesome icon with classes
               ),
               React.createElement('h3', {className: "text-xl font-bold mb-2 text-gray-800"}, title),
               React.createElement('p', {className: "text-gray-600 mb-4"}, description),
@@ -121,7 +115,7 @@
         const GameLandingPage = () => {
           const games = [
             {
-              iconName: "Gamepad2", // Using iconName instead of icon component directly
+              iconName: "Gamepad2",
               title: "Arcade Classics",
               description: "Retro-inspired arcade games that will test your skills and reflexes.",
               color: "bg-red-500"
@@ -162,7 +156,7 @@
                   games.map((game, index) =>
                     React.createElement(GameCard, {
                       key: index,
-                      iconName: game.iconName, // Passing iconName
+                      iconName: game.iconName,
                       title: game.title,
                       description: game.description,
                       color: game.color
