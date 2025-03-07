@@ -1,102 +1,194 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Game Hub</title>
-  <!-- Include CDN sources -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/17.0.2/umd/react.production.min.js" defer></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/17.0.2/umd/react-dom.production.min.js" defer></script>
-  <link rel="preload" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" as="style" 
-  onload="this.onload=null;this.rel='stylesheet'">
-  <link rel="preload" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" as="style" 
-  onload="this.onload=null;this.rel='stylesheet'">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Hub</title>
+    <!-- Include Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Include React and ReactDOM from CDN -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <!-- You would typically import lucide-react, but for a standalone page, we'll use inline SVGs or a simple icon replacement.
+         For simplicity in this standalone example, let's use placeholder text for icons.
+         In a real standalone scenario, you might consider embedding SVG icons directly or using a different icon library that's easier to include in a standalone HTML file. -->
+    <style>
+        /* Basic CSS for demonstration if Tailwind CDN doesn't load immediately */
+        .shadow-lg { box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); }
+        .rounded-xl { border-radius: 0.75rem; }
+        .p-6 { padding: 1.5rem; }
+        .transform { transition-property: transform; }
+        .transition-all { transition-property: all; }
+        .duration-300 { transition-duration: 300ms; }
+        .hover\:scale-105:hover { transform: scale(1.05); }
+        .hover\:shadow-xl:hover { box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); }
+        .mb-4 { margin-bottom: 1rem; }
+        .w-16 { width: 4rem; }
+        .h-16 { height: 4rem; }
+        .rounded-full { border-radius: 9999px; }
+        .flex { display: flex; }
+        .items-center { align-items: center; }
+        .justify-center { justify-content: center; }
+        .w-8 { width: 2rem; }
+        .h-8 { height: 2rem; }
+        .text-white { color: white; }
+        .text-xl { font-size: 1.25rem; }
+        .font-bold { font-weight: 700; }
+        .mb-2 { margin-bottom: 0.5rem; }
+        .text-gray-800 { color: #2d3748; }
+        .text-gray-600 { color: #718096; }
+        .mb-4 { margin-bottom: 1rem; }
+        .w-full { width: 100%; }
+        .bg-blue-500 { background-color: #3b82f6; }
+        .py-2 { padding-top: 0.5rem; padding-bottom: 0.5rem; }
+        .rounded-md { border-radius: 0.375rem; }
+        .hover\:bg-blue-600:hover { background-color: #2563eb; }
+        .transition-colors { transition-property: color, background-color, border-color, text-decoration-color, fill, stroke; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transition-duration: 150ms; }
+        .min-h-screen { min-height: 100vh; }
+        .bg-gray-100 { background-color: #f3f4f6; }
+        .bg-blue-600 { background-color: #2563eb; }
+        .py-16 { padding-top: 4rem; padding-bottom: 4rem; }
+        .text-center { text-align: center; }
+        .text-4xl { font-size: 2.25rem; }
+        .max-w-2xl { max-width: 42rem; }
+        .mx-auto { margin-left: auto; margin-right: auto; }
+        .container { width: 100%; } /* Basic container for small screens */
+        @media (min-width: 768px) { /* md */
+            .container { max-width: 768px; }
+        }
+        @media (min-width: 1024px) { /* lg */
+            .container { max-width: 1024px; }
+        }
+        .px-4 { padding-left: 1rem; padding-right: 1rem; }
+        .py-12 { padding-top: 3rem; padding-bottom: 3rem; }
+        .grid { display: grid; }
+        .grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+        @media (min-width: 768px) { /* md */
+            .md\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        }
+        @media (min-width: 1024px) { /* lg */
+            .lg\:grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+        }
+        .gap-6 { gap: 1.5rem; }
+        .bg-gray-800 { background-color: #2d3748; }
+        .py-6 { padding-top: 1.5rem; padding-bottom: 1.5rem; }
+    </style>
 </head>
 <body>
-  <script>0</script>
-  <div id="root"></div>
-  <script type="text/babel">
-    //const { Gamepad2, Puzzle, Target, Rocket } = lucideReact;
+    <div id="root"></div>
 
-    // Game card component
-    const GameCard = ({ icon: Icon, title, description, color }) => {
-      return (
-        <div className="bg-white shadow-lg rounded-xl p-6 transform transition-all duration-300 hover:scale-105 hover:shadow-xl">
-          <div className={`mb-4 w-16 h-16 ${color} rounded-full flex items-center justify-center`}>
-            <i className="fa-solid fa-{icon}"></i>
-          </div>
-          <h3 className="text-xl font-bold mb-2 text-gray-800">{title}</h3>
-          <p className="text-gray-600 mb-4">{description}</p>
-          <button className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition-colors">
-            Play Now
-          </button>
-        </div>
-      );
-    };
+    <script type="text/babel">
+        // Game card component
+        const GameCard = ({ iconName, title, description, color }) => {
+          // For standalone, we can't directly use lucide-react components.
+          // Let's use placeholder text for icons for this example.
+          const IconPlaceholder = ({name}) => <span>[{name} Icon]</span>;
 
-    // Main Landing Page Component
-    const GameLandingPage = () => {
-      const games = [
-        {
-          icon: gamepad,
-          title: "Arcade Classics",
-          description: "Retro-inspired arcade games that will test your skills and reflexes.",
-          color: "bg-red-500"
-        },
-        {
-          icon: puzzle-piece,
-          title: "Brain Teasers",
-          description: "Challenge your mind with intricate puzzles and logic games.",
-          color: "bg-green-500"
-        },
-        {
-          icon: bullseye,
-          title: "Strategy Challenge",
-          description: "Engage in strategic gameplay that requires careful planning.",
-          color: "bg-purple-500"
-        },
-        {
-          icon: rocket,
-          title: "Adventure Quest",
-          description: "Embark on epic journeys and explore immersive game worlds.",
-          color: "bg-orange-500"
-        }
-      ];
+          let IconComponent;
+          switch(iconName) {
+            case 'Gamepad2':
+              IconComponent = () => <IconPlaceholder name="Gamepad" />;
+              break;
+            case 'Puzzle':
+              IconComponent = () => <IconPlaceholder name="Puzzle" />;
+              break;
+            case 'Target':
+              IconComponent = () => <IconPlaceholder name="Target" />;
+              break;
+            case 'Rocket':
+              IconComponent = () => <IconPlaceholder name="Rocket" />;
+              break;
+            default:
+              IconComponent = () => <IconPlaceholder name="Icon" />;
+          }
 
-      return (
-        <div className="min-h-screen bg-gray-100">
-          {/* Header */}
-          <header className="bg-blue-600 text-white py-16 text-center">
-            <h1 className="text-4xl font-bold mb-4">Game Hub</h1>
-            <p className="text-xl max-w-2xl mx-auto">
-              Discover a world of exciting games, from brain-teasing puzzles to epic adventures.
-            </p>
-          </header>
 
-          {/* Game Cards Section */}
-          <main className="container mx-auto px-4 py-12">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {games.map((game, index) => (
-                <GameCard 
-                  key={index}
-                  icon={game.icon}
-                  title={game.title}
-                  description={game.description}
-                  color={game.color}
-                />
-              ))}
-            </div>
-          </main>
+          return (
+            React.createElement('div', {className: "bg-white shadow-lg rounded-xl p-6 transform transition-all duration-300 hover:scale-105 hover:shadow-xl"},
+              React.createElement('div', {className: `mb-4 w-16 h-16 ${color} rounded-full flex items-center justify-center`},
+                React.createElement(IconComponent, {className: "w-8 h-8 text-white"}) // Using IconComponent here
+              ),
+              React.createElement('h3', {className: "text-xl font-bold mb-2 text-gray-800"}, title),
+              React.createElement('p', {className: "text-gray-600 mb-4"}, description),
+              React.createElement('button', {className: "w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition-colors"},
+                'Play Now'
+              )
+            )
+          );
+        };
 
-          {/* Footer */}
-          <footer className="bg-gray-800 text-white py-6 text-center">
-            <p>&copy; 2024 Game Hub. All rights reserved.</p>
-          </footer>
-        </div>
-      );
-    };
+        // Main Landing Page Component
+        const GameLandingPage = () => {
+          const games = [
+            {
+              iconName: "Gamepad2", // Using iconName instead of icon component directly
+              title: "Arcade Classics",
+              description: "Retro-inspired arcade games that will test your skills and reflexes.",
+              color: "bg-red-500"
+            },
+            {
+              iconName: "Puzzle",
+              title: "Brain Teasers",
+              description: "Challenge your mind with intricate puzzles and logic games.",
+              color: "bg-green-500"
+            },
+            {
+              iconName: "Target",
+              title: "Strategy Challenge",
+              description: "Engage in strategic gameplay that requires careful planning.",
+              color: "bg-purple-500"
+            },
+            {
+              iconName: "Rocket",
+              title: "Adventure Quest",
+              description: "Embark on epic journeys and explore immersive game worlds.",
+              color: "bg-orange-500"
+            }
+          ];
 
-    ReactDOM.render(<GameLandingPage />, document.getElementById('root'));
-  </script>
+          return (
+            React.createElement('div', {className: "min-h-screen bg-gray-100"},
+              /* Header */
+              React.createElement('header', {className: "bg-blue-600 text-white py-16 text-center"},
+                React.createElement('h1', {className: "text-4xl font-bold mb-4"}, 'Game Hub'),
+                React.createElement('p', {className: "text-xl max-w-2xl mx-auto"},
+                  'Discover a world of exciting games, from brain-teasing puzzles to epic adventures.'
+                )
+              ),
+
+              /* Game Cards Section */
+              React.createElement('main', {className: "container mx-auto px-4 py-12"},
+                React.createElement('div', {className: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"},
+                  games.map((game, index) =>
+                    React.createElement(GameCard, {
+                      key: index,
+                      iconName: game.iconName, // Passing iconName
+                      title: game.title,
+                      description: game.description,
+                      color: game.color
+                    })
+                  )
+                )
+              ),
+
+              /* Footer */
+              React.createElement('footer', {className: "bg-gray-800 text-white py-6 text-center"},
+                React.createElement('p', null, '\u00A9 2024 Game Hub. All rights reserved.')
+              )
+            )
+          );
+        };
+
+        ReactDOM.render(
+          React.createElement(GameLandingPage, null),
+          document.getElementById('root')
+        );
+    </script>
+
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script>
+        // Configure Babel to transform JSX
+        Babel.transformScriptTags();
+    </script>
 </body>
 </html>
