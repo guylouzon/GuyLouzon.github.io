@@ -11,7 +11,7 @@
             box-sizing: border-box;
             font-family: 'Arial', sans-serif;
         }
-        
+
         body {
             background-color: #f5f5f5;
             display: flex;
@@ -19,8 +19,9 @@
             align-items: center;
             min-height: 100vh;
             padding: 20px;
+            flex-direction: column; /* Allow footer below card */
         }
-        
+
         .card-container {
             width: 100%;
             max-width: 400px;
@@ -28,8 +29,10 @@
             border-radius: 20px;
             overflow: hidden;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px; /* Space between card and footer */
+            position: relative; /* Positioning context for absolute elements */
         }
-        
+
         .card-image {
             width: 100%;
             height: 75vh;
@@ -37,35 +40,64 @@
             object-fit: cover;
             display: block;
         }
-        
+
         .card-info {
             padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start; /* Align items to the start, for left alignment */
         }
-        
+
+        .profile-round-image-container {
+            width: 80px; /* Adjust size as needed */
+            height: 80px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 2px solid white; /* Optional white border */
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.3); /* Optional shadow */
+            position: absolute; /* Absolute positioning */
+            top: calc(75vh - 40px - 20px); /* Half above main image bottom, adjusted for card-info padding */
+            left: 20px; /* Align with card-info padding */
+            transform: translateY(-50%); /* Vertically center relative to the calculated top */
+        }
+
+        .profile-round-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
         .name {
             font-size: 24px;
             font-weight: bold;
             margin-bottom: 5px;
+            text-align: left; /* Align name text to left */
+            margin-left: 100px; /* Indent to make space for profile image */
         }
-        
+
         .title {
             font-size: 16px;
             color: #666;
             margin-bottom: 15px;
+            text-align: left; /* Align title text to left */
+            margin-left: 100px; /* Indent to make space for profile image */
         }
-        
+
         .contact-info {
             font-size: 14px;
             margin-bottom: 5px;
+            text-align: left; /* Align contact info text to left */
+            margin-left: 100px; /* Indent to make space for profile image */
         }
-        
+
         .share-bar {
             display: flex;
             justify-content: space-around;
             padding: 15px;
             border-top: 1px solid #eee;
         }
-        
+
         .share-bar a {
             color: #444;
             text-decoration: none;
@@ -75,30 +107,120 @@
             align-items: center;
             transition: transform 0.2s;
         }
-        
+
         .share-bar a:hover {
             transform: scale(1.1);
             color: #007bff;
         }
-        
+
         .icon {
             font-size: 24px;
             margin-bottom: 5px;
+        }
+
+        .footer-note {
+            text-align: center;
+            font-size: 12px;
+            color: #888;
+        }
+
+        .footer-note a {
+            color: #007bff;
+            text-decoration: none;
+            cursor: pointer; /* Change cursor to pointer */
+        }
+
+        .footer-note a:hover {
+            text-decoration: underline;
+        }
+
+        /* Pop-over styles */
+        .pop-over {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+        }
+
+        .pop-over-content {
+            background-color: #fefefe;
+            margin: 15% auto; /* 15% from the top and centered */
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%; /* Could be more or less, depending on screen size */
+            max-width: 500px;
+            border-radius: 10px;
+        }
+
+        .pop-over-content label, .pop-over-content input {
+            display: block;
+            margin-bottom: 10px;
+            width: 100%;
+        }
+
+        .pop-over-content input {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .pop-over-content button[type="submit"], .pop-over-content .close-button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .pop-over-content button[type="submit"]:hover, .pop-over-content .close-button:hover {
+            background-color: #0056b3;
+        }
+
+        .pop-over-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .close-button {
+            float: right;
+            font-size: 20px;
+            font-weight: bold;
+            background-color: transparent;
+            color: #aaa;
+        }
+
+        .close-button:hover,
+        .close-button:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
         }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
 </head>
 <body>
     <div class="card-container">
-        <img src="/api/placeholder/400/320" alt="Profile Picture" class="card-image" id="profile-image">
-        
+        <img src="https://picsum.photos/400/600" alt="Profile Picture" class="card-image" id="profile-image">
+
         <div class="card-info">
+            <div class="profile-round-image-container">
+                <img src="https://avatar.iran.liara.run/public" alt="Profile Round Picture" class="profile-round-image" id="profile-round-image">
+            </div>
             <div class="name" id="contact-name">John Doe</div>
             <div class="title" id="contact-title">Software Engineer</div>
             <div class="contact-info" id="contact-email">email@example.com</div>
             <div class="contact-info" id="contact-phone">(123) 456-7890</div>
         </div>
-        
+
         <div class="share-bar" id="social-bar">
             <a href="#" id="linkedin-link" target="_blank">
                 <i class="fab fa-linkedin icon"></i>
@@ -119,6 +241,53 @@
         </div>
     </div>
 
+    <div class="footer-note">
+        <p>Want your own digital business card? <a href="#" id="new-card-link">Create New Card</a></p>
+    </div>
+
+    <!-- Pop-over form -->
+    <div id="newCardPopOver" class="pop-over">
+        <div class="pop-over-content">
+            <div class="pop-over-header">
+                <h2>Create New Card</h2>
+                <span class="close-button" id="closePopOver">×</span>
+            </div>
+            <form id="cardForm" action="./cardlink.html" method="GET">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name">
+
+                <label for="title">Title:</label>
+                <input type="text" id="title" name="title">
+
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email">
+
+                <label for="phone">Phone:</label>
+                <input type="tel" id="phone" name="phone">
+
+                <label for="image">Main Image URL:</label>
+                <input type="url" id="image" name="image">
+
+                <label for="profileImage">Profile Image URL:</label>
+                <input type="url" id="profileImage" name="profileImage">
+
+                <label for="linkedin">LinkedIn URL:</label>
+                <input type="url" id="linkedin" name="linkedin">
+
+                <label for="twitter">Twitter URL:</label>
+                <input type="url" id="twitter" name="twitter">
+
+                <label for="github">GitHub URL:</label>
+                <input type="url" id="github" name="github">
+
+                <label for="instagram">Instagram URL:</label>
+                <input type="url" id="instagram" name="instagram">
+
+                <button type="submit">Create Card</button>
+            </form>
+        </div>
+    </div>
+
     <script>
         // Default contact data that will be used as fallback
         const defaultContactData = {
@@ -126,7 +295,8 @@
             title: "Software Engineer",
             email: "john.doe@example.com",
             phone: "(123) 456-7890",
-            image: "/api/placeholder/400/320",
+            image: "https://picsum.photos/400/600", // Default main image URL
+            profileImage: "https://avatar.iran.liara.run/public", // Default profile image URL
             social: {
                 linkedin: "https://linkedin.com/in/johndoe",
                 twitter: "https://twitter.com/johndoe",
@@ -140,14 +310,15 @@
             const params = {};
             const queryString = window.location.search;
             const urlParams = new URLSearchParams(queryString);
-            
+
             // Get basic contact info
             params.name = urlParams.get('name');
             params.title = urlParams.get('title');
             params.email = urlParams.get('email');
             params.phone = urlParams.get('phone');
             params.image = urlParams.get('image');
-            
+            params.profileImage = urlParams.get('profileImage'); // Get profile image URL
+
             // Get social links
             params.social = {
                 linkedin: urlParams.get('linkedin'),
@@ -155,7 +326,7 @@
                 github: urlParams.get('github'),
                 instagram: urlParams.get('instagram')
             };
-            
+
             return params;
         }
 
@@ -163,41 +334,64 @@
         function mergeContactData() {
             const urlParams = getQueryParams();
             const contactData = {...defaultContactData};
-            
+
             // Update basic info if provided in URL
             if (urlParams.name) contactData.name = urlParams.name;
             if (urlParams.title) contactData.title = urlParams.title;
             if (urlParams.email) contactData.email = urlParams.email;
             if (urlParams.phone) contactData.phone = urlParams.phone;
             if (urlParams.image) contactData.image = urlParams.image;
-            
+            if (urlParams.profileImage) contactData.profileImage = urlParams.profileImage; // Update profile image
+
             // Update social links if provided in URL
             if (urlParams.social.linkedin) contactData.social.linkedin = urlParams.social.linkedin;
             if (urlParams.social.twitter) contactData.social.twitter = urlParams.social.twitter;
             if (urlParams.social.github) contactData.social.github = urlParams.social.github;
             if (urlParams.social.instagram) contactData.social.instagram = urlParams.social.instagram;
-            
+
             return contactData;
         }
 
         // Function to load contact data
         function loadContactData() {
             const contactData = mergeContactData();
-            
+
             document.getElementById("contact-name").textContent = contactData.name;
             document.getElementById("contact-title").textContent = contactData.title;
             document.getElementById("contact-email").textContent = contactData.email;
             document.getElementById("contact-phone").textContent = contactData.phone;
             document.getElementById("profile-image").src = contactData.image;
-            
+            document.getElementById("profile-round-image").src = contactData.profileImage; // Set round profile image src
+
             document.getElementById("linkedin-link").href = contactData.social.linkedin;
             document.getElementById("twitter-link").href = contactData.social.twitter;
             document.getElementById("github-link").href = contactData.social.github;
             document.getElementById("instagram-link").href = contactData.social.instagram;
-            
+
             // Set page title to the contact's name
             document.title = contactData.name + " - Digital Business Card";
         }
+
+        // Pop-over functionality
+        const newCardLink = document.getElementById('new-card-link');
+        const newCardPopOver = document.getElementById('newCardPopOver');
+        const closePopOver = document.getElementById('closePopOver');
+
+        newCardLink.addEventListener('click', function(event) {
+            event.preventDefault(); // Prevent default link behavior
+            newCardPopOver.style.display = "block";
+        });
+
+        closePopOver.addEventListener('click', function() {
+            newCardPopOver.style.display = "none";
+        });
+
+        window.addEventListener('click', function(event) {
+            if (event.target == newCardPopOver) {
+                newCardPopOver.style.display = "none";
+            }
+        });
+
 
         // Initialize the app
         window.onload = function() {
