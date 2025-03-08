@@ -238,6 +238,10 @@
                 <i class="fab fa-instagram icon"></i>
                 <span>Instagram</span>
             </a>
+            <a href="#" id="vcard-download-link">
+                <i class="fa fa-download icon"></i>
+                <span>vCard</span>
+            </a>
         </div>
     </div>
 
@@ -370,7 +374,48 @@
 
             // Set page title to the contact's name
             document.title = contactData.name + " - Digital Business Card";
+
+            setupVCardDownload(contactData); // Setup vCard download functionality
         }
+
+        function setupVCardDownload(contactData) {
+            const vcardDownloadLink = document.getElementById('vcard-download-link');
+            vcardDownloadLink.addEventListener('click', function(event) {
+                event.preventDefault(); // Prevent default link behavior
+                downloadVCard(contactData);
+            });
+        }
+
+
+        function downloadVCard(contactData) {
+            const vcardContent = generateVCardContent(contactData);
+            const blob = new Blob([vcardContent], { type: 'text/vcard;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const downloadLink = document.createElement('a');
+            downloadLink.href = url;
+            downloadLink.download = `${contactData.name.replace(/\s/g, '_')}.vcf`; // Suggest file name
+            document.body.appendChild(downloadLink); // Append to the document
+            downloadLink.click(); // Programmatically click the link
+            document.body.removeChild(downloadLink); // Clean up
+            URL.revokeObjectURL(url); // Revoke the Blob URL
+        }
+
+
+        function generateVCardContent(contactData) {
+            return `BEGIN:VCARD
+VERSION:3.0
+FN:${contactData.name}
+N:${contactData.name};;;;
+TITLE:${contactData.title}
+TEL;TYPE=WORK,VOICE:${contactData.phone}
+EMAIL;TYPE=PREF,INTERNET:${contactData.email}
+URL;TYPE=PROFILE: ${contactData.social.linkedin || ''}
+URL;TYPE=TWITTER: ${contactData.social.twitter || ''}
+URL;TYPE=GITHUB: ${contactData.social.github || ''}
+URL;TYPE=INSTAGRAM: ${contactData.social.instagram || ''}
+END:VCARD`;
+        }
+
 
         // Pop-over functionality
         const newCardLink = document.getElementById('new-card-link');
