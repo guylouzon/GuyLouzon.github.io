@@ -3,7 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Game Hub</title>
+    <title>Single page game apps, created with AI</title>
+
+    <!-- Basic SEO Meta Tags -->
+    <meta name="description" content="Play free online games including puzzle games, brain teasers, and strategic games. Experience AI-powered gaming at Single page game apps." />
+    <meta name="keywords" content="online games, puzzle games, brain teasers, strategic games, AI games, free games" />
+    <meta name="author" content="Single page game apps" />
+    <meta name="robots" content="index, follow" />
+    <meta name="language" content="English" />
+
+    <!-- OpenGraph Meta Tags -->
+    <meta property="og:title" content="Single page game apps, created with AI" />
+    <meta property="og:description" content="Discover a world of exciting games, from brain-teasing puzzles to epic adventures." />
+    <meta property="og:image" content="spa_games.jpg" />
+    <meta property="og:url" content="https://guylouzon.github.io/games/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Single page game apps" />
+
+    <!-- Twitter Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Single page game apps, created with AI" />
+    <meta name="twitter:description" content="Discover a world of exciting games, from brain-teasing puzzles to epic adventures." />
+    <meta name="twitter:image" content="spa_games.jpg" />
+    <meta name="twitter:creator" content="@guylouzon" />
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://guylouzon.github.io/games/" />
+
+    <!-- Schema.org Markup -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "Single page game apps",
+        "url": "https://guylouzon.github.io/games/",
+        "description": "Play free online games including puzzle games, brain teasers, and strategic games",
+        "potentialAction": {
+          "@type": "PlayAction",
+          "target": "https://guylouzon.github.io/games/"
+        }
+      }
+      </script>
+
     <!-- Include Tailwind CSS via CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Include React and ReactDOM from CDN -->
@@ -78,7 +119,7 @@
 
     <script type="text/babel">
         // Game card component
-        const GameCard = ({ iconName, title, description, color }) => {
+        const GameCard = ({ iconName, title, description, color, link }) => {
           let iconClass = "";
           switch(iconName) {
             case 'Gamepad2':
@@ -97,29 +138,37 @@
               iconClass = "fa-solid fa-question"; // Default icon if name is not recognized
           }
 
-          return (
-            React.createElement('div', {className: "bg-white shadow-lg rounded-xl p-6 transform transition-all duration-300 hover:scale-105 hover:shadow-xl"},
-              React.createElement('div', {className: `mb-4 w-16 h-16 ${color} rounded-full flex items-center justify-center`},
-                React.createElement('i', {className: `${iconClass} w-8 h-8 text-white fa-xl`}) // Using Font Awesome icon with classes
-              ),
-              React.createElement('h3', {className: "text-xl font-bold mb-2 text-gray-800"}, title),
-              React.createElement('p', {className: "text-gray-600 mb-4"}, description),
-              React.createElement('button', {className: "w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition-colors"},
-                'Play Now'
-              )
-            )
-          );
+        // Function to redirect to link
+        const handleClick = (event, link) => {
+          event.preventDefault();
+          window.location.href = link;
         };
+
+        return (
+          React.createElement('div', {className: "bg-white shadow-lg rounded-xl p-6 transform transition-all duration-300 hover:scale-105 hover:shadow-xl"},
+            React.createElement('div', {className: `mb-4 w-16 h-16 ${color} rounded-full flex items-center justify-center`},
+              React.createElement('i', {className: `${iconClass} w-8 h-8 text-white fa-xl`}) // Using Font Awesome icon with classes
+            ),
+            React.createElement('h3', {className: "text-xl font-bold mb-2 text-gray-800"}, title),
+            React.createElement('p', {className: "text-gray-600 mb-4"}, description),
+            React.createElement('button', {
+              className: "w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition-colors",
+              onClick: (event) => handleClick(event, link),
+              type: "button"
+            }, 'Play Now')
+          )
+        );
+      };
 
         // Main Landing Page Component
         const GameLandingPage = () => {
           const games = [
             {
               iconName: "Gamepad2",
-              title: "Arcade Classics",
-              description: "Retro-inspired arcade games that will test your skills and reflexes.",
+              title: "4 in a Row",
+              description: "Connect four pieces in a row to win the game.",
               color: "bg-red-500",
-              link: "#" // placeholder link
+              link: "connect4.html" // placeholder link
             },
             {
               iconName: "Puzzle",
@@ -148,7 +197,7 @@
             React.createElement('div', {className: "min-h-screen bg-gray-100"},
               /* Header */
               React.createElement('header', {className: "bg-blue-600 text-white py-16 text-center"},
-                React.createElement('h1', {className: "text-4xl font-bold mb-4"}, 'Game Hub'),
+                React.createElement('h1', {className: "text-4xl font-bold mb-4"}, 'Single page game apps'),
                 React.createElement('p', {className: "text-xl max-w-2xl mx-auto"},
                   'Discover a world of exciting games, from brain-teasing puzzles to epic adventures.'
                 )
@@ -172,7 +221,7 @@
 
               /* Footer */
               React.createElement('footer', {className: "bg-gray-800 text-white py-6 text-center"},
-                React.createElement('p', null, '\u00A9 2024 Game Hub. All rights reserved.')
+                React.createElement('p', null, '\u00A9 2024 Single page game apps. All rights reserved.')
               )
             )
           );
