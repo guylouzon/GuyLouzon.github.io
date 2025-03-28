@@ -221,7 +221,27 @@
 
               /* Footer */
               React.createElement('footer', {className: "bg-gray-800 text-white py-6 text-center"},
-                React.createElement('p', null, '\u00A9 2024 Single page game apps. All rights reserved.')
+                React.createElement('div', {className: "container mx-auto px-4"},
+                  React.createElement('p', {className: "mb-4"}, '\u00A9 2024 Single page game apps. All rights reserved.'),
+                  React.createElement('div', {className: "flex justify-center space-x-6"},
+                    React.createElement('a', {
+                      href: "https://twitter.com/guylouzon",
+                      target: "_blank",
+                      rel: "noopener noreferrer",
+                      className: "text-white hover:text-blue-400 transition-colors"
+                    },
+                      React.createElement('i', {className: "fa-brands fa-twitter fa-lg"})
+                    ),
+                    React.createElement('a', {
+                      href: "https://linkedin.com/in/guylouzon",
+                      target: "_blank",
+                      rel: "noopener noreferrer",
+                      className: "text-white hover:text-blue-400 transition-colors"
+                    },
+                      React.createElement('i', {className: "fa-brands fa-linkedin fa-lg"})
+                    )
+                  )
+                )
               )
             )
           );
