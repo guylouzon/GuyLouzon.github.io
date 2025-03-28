@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connect Four</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/17.0.2/umd/react.development.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/17.0.2/umd/react-dom.development.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.26.0/babel.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        .game-container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            padding: 20px;
+            text-align: center;
+        }
+        .board-container {
+            display: inline-block;
+            border: 2px solid #333;
+        }
+        .column-selector {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+        .column-button {
+            width: 48px;
+            height: 32px;
+            margin: 0 2px;
+            background-color: #f0f0f0;
+            border: 1px solid #999;
+            cursor: pointer;
+        }
+        .column-button:hover {
+            background-color: #e0e0e0;
+        }
+        .column-button:disabled {
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+        .board-row {
+            display: flex;
+        }
+        .board-cell {
+            width: 48px;
+            height: 48px;
+            border: 1px solid #999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+        .board-cell-button {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+        }
+        .piece {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 1px solid rgba(0,0,0,0.2);
+        }
+        .piece-red {
+            background-color: red;
+        }
+        .piece-yellow {
+            background-color: yellow;
+        }
+        .game-status {
+            margin: 10px 0;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .reset-button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .reset-button:hover {
+            background-color: #45a049;
+        }
+        @keyframes drop {
+            0% { transform: translateY(-100%); opacity: 0.5; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+        .animate-drop {
+            animation: drop 0.3s ease-in-out;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const ConnectFour = () => {
+            // Board dimensions
+            const ROWS = 6;
+            const COLS = 7;
+
+            // Game state
+            const [board, setBoard] = React.useState(
+                Array(ROWS).fill().map(() => Array(COLS).fill(null))
+            );
+            const [currentPlayer, setCurrentPlayer] = React.useState(1);
+            const [winner, setWinner] = React.useState(null);
+            const [isDraw, setIsDraw] = React.useState(false);
+            const [droppingPiece, setDroppingPiece] = React.useState(null);
+
+            // Check for a win
+            const checkWinner = (board) => {
+                // Horizontal check
+                for (let r = 0; r < ROWS; r++) {
+                    for (let c = 0; c <= COLS - 4; c++) {
+                        if (board[r][c] && 
+                            board[r][c] === board[r][c+1] && 
+                            board[r][c] === board[r][c+2] && 
+                            board[r][c] === board[r][c+3]) {
+                            return board[r][c];
+                        }
+                    }
+                }
+
+                // Vertical check
+                for (let r = 0; r <= ROWS - 4; r++) {
+                    for (let c = 0; c < COLS; c++) {
+                        if (board[r][c] && 
+                            board[r][c] === board[r+1][c] && 
+                            board[r][c] === board[r+2][c] && 
+                            board[r][c] === board[r+3][c]) {
+                            return board[r][c];
+                        }
+                    }
+                }
+
+                // Diagonal check (top-left to bottom-right)
+                for (let r = 0; r <= ROWS - 4; r++) {
+                    for (let c = 0; c <= COLS - 4; c++) {
+                        if (board[r][c] && 
+                            board[r][c] === board[r+1][c+1] && 
+                            board[r][c] === board[r+2][c+2] && 
+                            board[r][c] === board[r+3][c+3]) {
+                            return board[r][c];
+                        }
+                    }
+                }
+
+                // Diagonal check (top-right to bottom-left)
+                for (let r = 0; r <= ROWS - 4; r++) {
+                    for (let c = 3; c < COLS; c++) {
+                        if (board[r][c] && 
+                            board[r][c] === board[r+1][c-1] && 
+                            board[r][c] === board[r+2][c-2] && 
+                            board[r][c] === board[r+3][c-3]) {
+                            return board[r][c];
+                        }
+                    }
+                }
+
+                return null;
+            };
+
+            // Check for a draw
+            const checkDraw = (board) => {
+                return board.every(row => row.every(cell => cell !== null));
+            };
+
+            // Drop a piece in a column
+            const dropPiece = (col) => {
+                // Ignore if game is over or column is full
+                if (winner || isDraw) return;
+
+                // Create a copy of the board to modify
+                const newBoard = board.map(row => [...row]);
+
+                // Find the lowest empty row in the selected column
+                for (let r = ROWS - 1; r >= 0; r--) {
+                    if (newBoard[r][col] === null) {
+                        // Set dropping piece to animate
+                        setDroppingPiece({ col, row: r, player: currentPlayer });
+
+                        // Use a slight delay to allow animation
+                        setTimeout(() => {
+                            newBoard[r][col] = currentPlayer;
+                            
+                            // Check for winner
+                            const potentialWinner = checkWinner(newBoard);
+                            if (potentialWinner) {
+                                setWinner(potentialWinner);
+                            } else if (checkDraw(newBoard)) {
+                                setIsDraw(true);
+                            } else {
+                                // Switch players
+                                setCurrentPlayer(currentPlayer === 1 ? 2 : 1);
+                            }
+
+                            setBoard(newBoard);
+                            setDroppingPiece(null);
+                        }, 300); // matches the animation duration
+                        break;
+                    }
+                }
+            };
+
+            // Reset the game
+            const resetGame = () => {
+                setBoard(Array(ROWS).fill().map(() => Array(COLS).fill(null)));
+                setCurrentPlayer(1);
+                setWinner(null);
+                setIsDraw(false);
+                setDroppingPiece(null);
+            };
+
+            // Render the board
+            const renderBoard = () => {
+                return board.map((row, rowIndex) => (
+                    <div key={rowIndex} className="board-row">
+                        {row.map((cell, colIndex) => {
+                            // Determine piece color and animation
+                            let pieceClass = 'piece ';
+                            if (cell === 1) {
+                                pieceClass += 'piece-red';
+                            } else if (cell === 2) {
+                                pieceClass += 'piece-yellow';
+                            }
+
+                            // Add drop animation for the current piece
+                            if (droppingPiece && 
+                                droppingPiece.col === colIndex && 
+                                droppingPiece.row === rowIndex) {
+                                pieceClass += ' animate-drop';
+                            }
+
+                            return (
+                                <div 
+                                    key={colIndex} 
+                                    className="board-cell"
+                                >
+                                    {cell !== null && (
+                                        <div className={pieceClass} />
+                                    )}
+                                    {cell === null && (
+                                        <button 
+                                            className="board-cell-button"
+                                            onClick={() => dropPiece(colIndex)}
+                                        />
+                                    )}
+                                </div>
+                            );
+                        })}
+                    </div>
+                ));
+            };
+
+            // Render column selectors
+            const renderColumnSelectors = () => {
+                return (
+                    <div className="column-selector">
+                        {[...Array(COLS)].map((_, colIndex) => (
+                            <button 
+                                key={colIndex} 
+                                className="column-button"
+                                onClick={() => dropPiece(colIndex)}
+                                disabled={winner || isDraw}
+                            >
+                                ▼
+                            </button>
+                        ))}
+                    </div>
+                );
+            };
+
+            return (
+                <div className="game-container">
+                    <h1>Connect Four</h1>
+                    
+                    {/* Column Selectors */}
+                    {renderColumnSelectors()}
+                    
+                    {/* Game Board */}
+                    <div className="board-container">
+                        {renderBoard()}
+                    </div>
+                    
+                    {/* Game Status */}
+                    <div className="game-status">
+                        {winner ? (
+                            `Player ${winner} Wins!`
+                        ) : isDraw ? (
+                            "It's a Draw!"
+                        ) : (
+                            `Current Player: ${currentPlayer === 1 ? 'Red' : 'Yellow'}`
+                        )}
+                    </div>
+                    
+                    {/* Reset Button */}
+                    <button 
+                        className="reset-button"
+                        onClick={resetGame}
+                    >
+                        Reset Game
+                    </button>
+                </div>
+            );
+        };
+
+        ReactDOM.render(
+            <React.StrictMode>
+                <ConnectFour />
+            </React.StrictMode>,
+            document.getElementById('root')
+        );
+    </script>
+</body>
+</html>
