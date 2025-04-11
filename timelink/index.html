@@ -129,7 +129,7 @@
 
 <script type="text/javascript">
     // global variables  declaration
-    cal = ics();
+    var cal = ics();
     const required = ['title','fromtime','totime'];
     const optional = ['desc','loc'];
 
@@ -144,6 +144,7 @@
     }
 
     function createEvent() {
+        cal = ics(); // Reset calendar instance
         cal.addEvent($('input[name="title"]').val(), $('input[name="desc"]').val(), $('input[name="loc"]').val(), $('input[name="fromtime"]').val(), $('input[name="totime"]').val());
         console.log($('input[name="desc"]').val());
         console.log(cal);
