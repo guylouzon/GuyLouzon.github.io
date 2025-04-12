@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- Basic SEO Meta Tags -->
     <meta name="description" content="Play Connect Four online for free! Challenge friends or play against AI in this classic strategy game. Drop tokens to connect 4 in a row horizontally, vertically, or diagonally." />
@@ -143,16 +145,35 @@
             font-size: 18px;
             font-weight: bold;
         }
-        .reset-button {
+        .button-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .game-button {
             padding: 10px 20px;
-            background-color: #4CAF50;
             color: white;
             border: none;
             border-radius: 4px;
             cursor: pointer;
+            font-size: 14px;
+        }
+        .reset-button {
+            background-color: #4CAF50;
         }
         .reset-button:hover {
             background-color: #45a049;
+        }
+        .undo-button {
+            background-color: #2196F3;
+        }
+        .undo-button:hover {
+            background-color: #1E88E5;
+        }
+        .undo-button:disabled {
+            background-color: #B0BEC5;
+            cursor: not-allowed;
         }
         @keyframes drop {
             0% { transform: translateY(-100%); opacity: 0.5; }
@@ -180,6 +201,9 @@
             const [winner, setWinner] = React.useState(null);
             const [isDraw, setIsDraw] = React.useState(false);
             const [droppingPiece, setDroppingPiece] = React.useState(null);
+            
+            // History of moves for undo functionality
+            const [moveHistory, setMoveHistory] = React.useState([]);
 
             // Check for a win
             const checkWinner = (board) => {
@@ -255,6 +279,14 @@
 
                         // Use a slight delay to allow animation
                         setTimeout(() => {
+                            // Save the current state to move history before modifying
+                            setMoveHistory(prev => [...prev, {
+                                board: newBoard.map(row => [...row]),
+                                currentPlayer,
+                                winner,
+                                isDraw
+                            }]);
+
                             newBoard[r][col] = currentPlayer;
                             
                             // Check for winner
@@ -276,6 +308,26 @@
                 }
             };
 
+            // Undo the last move
+            const undoLastMove = () => {
+                if (moveHistory.length === 0) return;
+
+                // Get the last move from history
+                const lastMove = moveHistory[moveHistory.length - 1];
+
+                // Restore the previous state
+                setBoard(lastMove.board);
+                setCurrentPlayer(lastMove.currentPlayer);
+                setWinner(lastMove.winner);
+                setIsDraw(lastMove.isDraw);
+
+                // Remove the last move from history
+                setMoveHistory(prev => prev.slice(0, -1));
+                
+                // Reset dropping piece
+                setDroppingPiece(null);
+            };
+
             // Reset the game
             const resetGame = () => {
                 setBoard(Array(ROWS).fill().map(() => Array(COLS).fill(null)));
@@ -283,6 +335,7 @@
                 setWinner(null);
                 setIsDraw(false);
                 setDroppingPiece(null);
+                setMoveHistory([]);
             };
 
             // Render the board
@@ -367,13 +420,25 @@
                         )}
                     </div>
                     
-                    {/* Reset Button */}
-                    <button 
-                        className="reset-button"
-                        onClick={resetGame}
-                    >
-                        Reset Game
-                    </button>
+                    {/* Button Container */}
+                    <div className="button-container">
+                        {/* Undo Button */}
+                        <button 
+                            className="game-button undo-button"
+                            onClick={undoLastMove}
+                            disabled={moveHistory.length === 0 || winner || isDraw}
+                        >
+                            Undo
+                        </button>
+
+                        {/* Reset Button */}
+                        <button 
+                            className="game-button reset-button"
+                            onClick={resetGame}
+                        >
+                            Reset Game
+                        </button>
+                    </div>
                 </div>
             );
         };

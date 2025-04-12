@@ -1,8 +1,183 @@
-<html>
-  <head>
-    <meta http-equiv="refresh" content="time; URL=https://github.com/GuyLou/" />
-  </head>
-  <body>
-    this page has been redirected <a href="https://github.com/GuyLouzon/">here</a>
-  </body>
-<html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guy Louzon - Projects Portfolio</title>
+    
+    <!-- Include React and ReactDOM -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    
+    <!-- Include Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="bg-gray-100">
+    <div id="root"></div>
+
+    <script type="text/babel">
+
+const Header = () => {
+    const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+
+    const socialLinks = [
+        { href: 'https://github.com/GuyLouzon', text: 'GitHub', className: 'bg-white text-blue-700' },
+        { href: 'https://interq.link/42/6x7.php?v=webapp&channel=57', text: 'InterQ', className: 'bg-white text-blue-700' },
+        { href: 'https://medium.com/@guylouzon', text: 'Medium', className: 'bg-black font-bold text-white-700' },
+        { href: 'https://stackoverflow.com/users/4207055/guy-louzon', text: 'StackOverflow', className: 'bg-white text-orange-500' },
+        { href: 'https://www.kaggle.com/guylouzon', text: 'Kaggle', className: 'bg-white border-2 border-blue-500 text-blue-500' },
+        { href: 'https://linkedin.com/in/guylouzon', text: 'LinkedIn', className: 'bg-transparent border-2 border-white text-white' }
+    ];
+
+    return React.createElement('header', {
+        className: 'bg-gradient-to-r from-blue-500 to-blue-700 text-white py-16'
+    }, [
+        React.createElement('div', {
+            className: 'container mx-auto px-4'
+        }, [
+            // Mobile menu button
+            React.createElement('button', {
+                className: 'md:hidden w-full text-white mb-4 flex items-center justify-center',
+                onClick: () => setIsMenuOpen(!isMenuOpen)
+            }, [
+                React.createElement('span', { className: 'mr-2' }, 'Social Links'),
+                React.createElement('i', { 
+                    className: `fas fa-${isMenuOpen ? 'times' : 'bars'}`
+                })
+            ]),
+            React.createElement('div', {
+                className: 'flex flex-col md:flex-row items-center justify-between'
+            }, [
+                React.createElement('div', {
+                    className: 'md:w-1/2 text-center md:text-left mb-8 md:mb-0'
+                }, [
+                    React.createElement('h1', {
+                        className: 'text-4xl md:text-5xl font-bold mb-4'
+                    }, 'Guy Louzon'),
+                    React.createElement('p', {
+                        className: 'text-xl mb-6 text-blue-100'
+                    }, 'Running code'),
+                    React.createElement('p', {
+                        className: 'text-lg mb-8 text-blue-50'
+                    }, 'Twitter is arguing, LinkedIn is cringe. what\'s Github.io...?'),
+                    // Social links container with mobile responsiveness
+                    React.createElement('div', {
+                        className: `${isMenuOpen ? 'flex' : 'hidden'} md:flex flex-col md:flex-row md:flex-wrap gap-2 justify-center md:justify-start`
+                    }, socialLinks.map((link, index) =>
+                        React.createElement('a', {
+                            key: index,
+                            href: link.href,
+                            className: `${link.className} px-6 py-2 rounded-full hover:bg-blue-50 transition-colors text-center`
+                        }, link.text)
+                    ))
+                ]),
+                React.createElement('div', {
+                    className: 'md:w-1/3'
+                }, [
+                    React.createElement('img', {
+                        src: 'https://avatars.githubusercontent.com/u/9468761?v=4',
+                        alt: 'Guy Louzon',
+                        className: 'rounded-full w-64 h-64 object-cover border-4 border-white shadow-lg'
+                    })
+                ])
+            ])
+        ])
+    ]);
+};
+        const ProjectCard = ({ title, description, link, icon }) => {
+            return React.createElement('div', {
+                className: 'bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow',
+                onClick: () => window.location.href = link
+            }, [
+                React.createElement('div', {
+                    className: 'flex items-center mb-4'
+                }, [
+                    React.createElement('i', {
+                        className: `${icon} text-2xl text-blue-500 mr-3`
+                    }),
+                    React.createElement('h2', {
+                        className: 'text-xl font-bold'
+                    }, title)
+                ]),
+                React.createElement('p', {
+                    className: 'text-gray-600 mb-4'
+                }, description),
+                React.createElement('a', {
+                    href: link,
+                    className: 'text-blue-500 hover:text-blue-700'
+                }, 'View Project →')
+            ]);
+        };
+
+        const App = () => {
+            const projects = [
+                {
+                    title: 'Games Collection',
+                    description: 'A collection of browser-based games including puzzles and strategy games.',
+                    link: '/games/',
+                    icon: 'fas fa-gamepad'
+                },
+                {
+                    title: 'Time Link Generator',
+                    description: 'Generate calendar links and time-based content easily.',
+                    link: '/timelink/',
+                    icon: 'fas fa-calendar-alt'
+                },
+                {
+                    title: 'Branch System',
+                    description: 'A dynamic content management system for web applications.',
+                    link: '/branches/',
+                    icon: 'fas fa-code-branch'
+                }
+            ];
+
+            return React.createElement('div', {
+                className: 'min-h-screen'
+            }, [
+                React.createElement(Header),
+                React.createElement('main', {
+                    className: 'container mx-auto px-4 py-16'
+                }, [
+                    React.createElement('h2', {
+                        className: 'text-3xl font-bold text-center mb-12'
+                    }, 'Featured Projects'),
+                    React.createElement('div', {
+                        className: 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'
+                    }, projects.map((project, index) =>
+                        React.createElement(ProjectCard, {
+                            key: index,
+                            ...project
+                        })
+                    ))
+                ]),
+                React.createElement('footer', {
+                    className: 'text-center mt-8 text-gray-600'
+                }, [
+                    React.createElement('p', null, '© 2025 Guy Louzon'),
+                    React.createElement('div', {
+                        className: 'flex justify-center space-x-4 mt-4'
+                    }, [
+                        React.createElement('a', {
+                            href: 'https://github.com/GuyLouzon',
+                            className: 'text-gray-600 hover:text-gray-900'
+                        }, React.createElement('i', {
+                            className: 'fab fa-github text-2xl'
+                        }))
+                    ])
+                ])
+            ]);
+        };
+
+        ReactDOM.render(
+            React.createElement(App),
+            document.getElementById('root')
+        );
+    </script>
+
+    <!-- Babel for JSX support -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</body>
+</html>
