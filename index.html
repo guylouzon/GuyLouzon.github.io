@@ -26,10 +26,9 @@ const Header = () => {
     const socialLinks = [
         { href: 'https://github.com/GuyLouzon', text: 'GitHub', className: 'bg-white text-blue-700' },
         { href: 'https://interq.link/42/6x7.php?v=webapp&channel=57', text: 'InterQ', className: 'bg-white text-blue-700' },
-        { href: 'https://medium.com/@guylouzon', text: 'Medium', className: 'bg-black font-bold text-white-700' },
         { href: 'https://stackoverflow.com/users/4207055/guy-louzon', text: 'StackOverflow', className: 'bg-white text-orange-500' },
-        { href: 'https://www.kaggle.com/guylouzon', text: 'Kaggle', className: 'bg-white border-2 border-blue-500 text-blue-500' },
-        { href: 'https://linkedin.com/in/guylouzon', text: 'LinkedIn', className: 'bg-transparent border-2 border-white text-white' }
+        { href: 'https://linkedin.com/in/guylouzon', text: 'LinkedIn', className: 'bg-transparent border-2 border-white text-white' },
+        { href: 'mailto:guy.louzon@gmail.com', text: 'e-mail', className: 'bg-transparent border-2 border-white text-white' }
     ];
 
     return React.createElement('header', {
@@ -126,11 +125,41 @@ const Header = () => {
                     link: '/timelink/',
                     icon: 'fas fa-calendar-alt'
                 },
+                // {
+                //     title: 'Branch System',
+                //     description: 'A dynamic content management system for web applications.',
+                //     link: '/branches/',
+                //     icon: 'fas fa-code-branch'
+                // }
                 {
-                    title: 'Branch System',
-                    description: 'A dynamic content management system for web applications.',
-                    link: '/branches/',
-                    icon: 'fas fa-code-branch'
+                    title: 'Timeseries based Sales prediction',
+                    description: 'A machine learning model for predicting sales based on historical data.',
+                    link: 'https://github.com/guylouzon/sales-prediction/tree/main',
+                    icon: 'fas fa-robot'
+                },
+                {
+                    title: 'Various python projects',
+                    description: 'A collection of Python projects including data analysis and machine learning.',
+                    link: 'https://github.com/guylouzon/python-stuff/tree/main',
+                    icon: 'fas fa-robot'
+                },
+                {
+                    title: 'Kaggle',
+                    description: 'A few Machine Learning projects.',
+                    link: 'https://www.kaggle.com/guylouzon',
+                    icon: 'fas fa-robot'
+                },
+                {
+                    title: 'Blog posts on Medium',
+                    description: 'Blog posts about business, ecoinomics, and technology.',
+                    link: 'https://medium.com/@guylouzon',
+                    icon: 'fas fa-newspaper'
+                },
+                {
+                    title: 'Davar1 article collection',
+                    description: 'A few articles written on the Davar1 website (in Hebrew).',
+                    link: 'https://www.davar1.co.il/writer/%D7%92%D7%99%D7%90-%D7%9C%D7%95%D7%96%D7%95%D7%9F/',
+                    icon: 'fas fa-newspaper'
                 }
             ];
 
