@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Caesar Cipher Tool</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    body {
+      background-color: #f5f7fa;
+      display: flex;
+      justify-content: center;
+      padding: 2rem;
+    }
+    
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      max-width: 42rem;
+      padding: 1.5rem;
+      background-color: white;
+      border-radius: 0.5rem;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    h1 {
+      font-size: 1.875rem;
+      font-weight: bold;
+      margin-bottom: 1.5rem;
+      text-align: center;
+      color: #3182ce;
+    }
+    
+    .form-group {
+      width: 100%;
+      margin-bottom: 1rem;
+    }
+    
+    label {
+      display: block;
+      color: #4a5568;
+      font-size: 0.875rem;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+    }
+    
+    .radio-group {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+    }
+    
+    .radio-label {
+      display: inline-flex;
+      align-items: center;
+    }
+    
+    .radio-label input {
+      margin-right: 0.5rem;
+    }
+    
+    .shift-container {
+      display: flex;
+      align-items: center;
+    }
+    
+    .shift-value {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 3rem;
+      height: 3rem;
+      margin-left: 1rem;
+      border-radius: 9999px;
+      background-color: #ebf8ff;
+      color: #2c5282;
+      font-weight: bold;
+      font-size: 1.25rem;
+    }
+    
+    input[type="number"],
+    textarea {
+      width: 100%;
+      padding: 0.5rem;
+      border: 1px solid #cbd5e0;
+      border-radius: 0.25rem;
+      outline: none;
+    }
+    
+    input[type="number"]:focus,
+    textarea:focus {
+      border-color: #3182ce;
+    }
+    
+    input[type="range"] {
+      width: 100%;
+      margin-top: 0.5rem;
+    }
+    
+    textarea {
+      height: 8rem;
+      resize: vertical;
+    }
+    
+    textarea[readonly] {
+      background-color: #f7fafc;
+    }
+    
+    button {
+      background-color: #3182ce;
+      color: white;
+      font-weight: bold;
+      padding: 0.5rem 1.5rem;
+      border: none;
+      border-radius: 0.25rem;
+      cursor: pointer;
+      margin-bottom: 1rem;
+      transition: background-color 0.3s;
+    }
+    
+    button:hover {
+      background-color: #2c5282;
+    }
+    
+    .result-info {
+      margin-top: 1rem;
+      font-size: 0.875rem;
+      color: #718096;
+    }
+    
+    .cipher-wheel {
+      margin: 2rem 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    
+    .cipher-wheel h3 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+    
+    .wheel-container {
+      position: relative;
+    }
+    
+    .outer-wheel {
+      width: 18rem;
+      height: 18rem;
+      border-radius: 9999px;
+      background: linear-gradient(to bottom right, #bee3f8, #63b3ed);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    
+    .inner-wheel {
+      width: 13rem;
+      height: 13rem;
+      border-radius: 9999px;
+      background: linear-gradient(to bottom right, #fed7d7, #feb2b2);
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    
+    .outer-letter, .inner-letter {
+      position: absolute;
+      width: 2rem;
+      height: 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+    }
+    
+    .outer-letter {
+      color: #2c5282;
+      text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.7);
+    }
+    
+    .inner-letter {
+      color: #9b2c2c;
+      text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.7);
+    }
+    
+    .rotation-indicator {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+    
+    .indicator-arrow {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0.5rem;
+      height: 3rem;
+      background-color: #e53e3e;
+      transform-origin: bottom center;
+      clip-path: polygon(0% 0%, 100% 0%, 50% 100%);
+    }
+    
+    .wheel-legend {
+      margin-top: 1.5rem;
+      text-align: center;
+    }
+    
+    .legend-item {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-bottom: 0.25rem;
+    }
+    
+    .legend-color {
+      width: 1rem;
+      height: 1rem;
+      border-radius: 9999px;
+    }
+    
+    .legend-blue {
+      background: linear-gradient(to bottom right, #90cdf4, #2b6cb0);
+    }
+    
+    .legend-red {
+      background: linear-gradient(to bottom right, #fc8181, #c53030);
+    }
+    
+    .legend-text {
+      font-weight: 600;
+    }
+    
+    .blue-text {
+      color: #2c5282;
+    }
+    
+    .red-text {
+      color: #9b2c2c;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Caesar Cipher Tool</h1>
+    
+    <div class="form-group">
+      <label for="mode">Mode</label>
+      <div class="radio-group">
+        <label class="radio-label">
+          <input type="radio" name="mode" value="encrypt" checked> Encrypt
+        </label>
+        <label class="radio-label">
+          <input type="radio" name="mode" value="decrypt"> Decrypt
+        </label>
+      </div>
+    </div>
+    
+    <div class="form-group">
+      <label for="shift">Shift Value (-25 to 25)</label>
+      <div class="shift-container">
+        <input type="number" id="shift-input" min="-25" max="25" value="3">
+        <div class="shift-value" id="shift-display">3</div>
+      </div>
+      <input type="range" id="shift-slider" min="-25" max="25" value="3">
+    </div>
+    
+    <div class="form-group">
+      <label for="text">Enter Text</label>
+      <textarea id="input-text" placeholder="Type your message here..."></textarea>
+    </div>
+    
+    <button id="process-btn">Encrypt</button>
+    
+    <div class="form-group">
+      <label for="result">Result</label>
+      <textarea id="result-text" readonly></textarea>
+    </div>
+    
+    <div class="result-info" id="result-info" style="display: none;">
+      Encrypted with shift: 3
+    </div>
+    
+    <div class="cipher-wheel">
+      <h3>Cipher Wheel</h3>
+      <div class="wheel-container">
+        <div class="outer-wheel" id="outer-wheel">
+          <!-- Outer wheel letters will be added here by JavaScript -->
+        </div>
+      </div>
+      
+      <div class="wheel-legend">
+        <div class="legend-item">
+          <div class="legend-color legend-blue"></div>
+          <p class="legend-text blue-text">Outer Ring: Original Alphabet</p>
+        </div>
+        <div class="legend-item">
+          <div class="legend-color legend-red"></div>
+          <p class="legend-text red-text" id="inner-ring-text">Inner Ring: Shifted Alphabet (shift: 3)</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // DOM Elements
+    const modeRadios = document.querySelectorAll('input[name="mode"]');
+    const shiftInput = document.getElementById('shift-input');
+    const shiftSlider = document.getElementById('shift-slider');
+    const shiftDisplay = document.getElementById('shift-display');
+    const inputText = document.getElementById('input-text');
+    const resultText = document.getElementById('result-text');
+    const processBtn = document.getElementById('process-btn');
+    const resultInfo = document.getElementById('result-info');
+    const outerWheel = document.getElementById('outer-wheel');
+    const innerRingText = document.getElementById('inner-ring-text');
+    
+    // State
+    let currentMode = 'encrypt';
+    let currentShift = 3;
+    
+    // Initialize
+    function init() {
+      // Set up event listeners
+      modeRadios.forEach(radio => {
+        radio.addEventListener('change', function() {
+          currentMode = this.value;
+          processBtn.textContent = currentMode === 'encrypt' ? 'Encrypt' : 'Decrypt';
+        });
+      });
+      
+      shiftInput.addEventListener('change', updateShift);
+      shiftSlider.addEventListener('input', function() {
+        shiftInput.value = this.value;
+        updateShift();
+      });
+      
+      processBtn.addEventListener('click', processText);
+      
+      // Create cipher wheel
+      createCipherWheel();
+    }
+    
+    function updateShift() {
+      // Get value and ensure it's between -25 and 25
+      let value = parseInt(shiftInput.value) || 0;
+      value = Math.max(-25, Math.min(25, value));
+      
+      // Update all shift-related elements
+      currentShift = value;
+      shiftInput.value = value;
+      shiftSlider.value = value;
+      shiftDisplay.textContent = value;
+      innerRingText.textContent = `Inner Ring: Shifted Alphabet (shift: ${value})`;
+      
+      // Update wheel
+      updateCipherWheel();
+    }
+    
+    function processText() {
+      const text = inputText.value;
+      
+      if (!text) {
+        resultText.value = '';
+        resultInfo.style.display = 'none';
+        return;
+      }
+      
+      // For encryption, use shift directly; for decryption, negate the shift
+      const actualShift = currentMode === 'encrypt' ? currentShift : -currentShift;
+      
+      const processedText = text.split('').map(char => {
+        const code = char.charCodeAt(0);
+        
+        // Process uppercase letters
+        if (code >= 65 && code <= 90) {
+          // Handle negative shifts with modulo arithmetic
+          let shiftedCode = (code - 65 + actualShift) % 26;
+          if (shiftedCode < 0) shiftedCode += 26;
+          return String.fromCharCode(shiftedCode + 65);
+        }
+        // Process lowercase letters
+        else if (code >= 97 && code <= 122) {
+          // Handle negative shifts with modulo arithmetic
+          let shiftedCode = (code - 97 + actualShift) % 26;
+          if (shiftedCode < 0) shiftedCode += 26;
+          return String.fromCharCode(shiftedCode + 97);
+        }
+        // Leave non-alphabetic characters unchanged
+        return char;
+      }).join('');
+      
+      resultText.value = processedText;
+      resultInfo.textContent = `${currentMode === 'encrypt' ? 'Encrypted' : 'Decrypted'} with shift: ${currentShift}`;
+      resultInfo.style.display = 'block';
+    }
+    
+    function createCipherWheel() {
+      // Create outer alphabet
+      const alphabet = Array.from({ length: 26 }, (_, i) => String.fromCharCode(65 + i));
+      
+      // Add outer letters
+      for (let i = 0; i < alphabet.length; i++) {
+        const letter = alphabet[i];
+        const angle = (i * 360) / 26;
+        
+        const outerLetter = document.createElement('div');
+        outerLetter.className = 'outer-letter';
+        outerLetter.textContent = letter;
+        outerLetter.style.transform = `rotate(${angle}deg) translate(0, -8rem) rotate(-${angle}deg)`;
+        outerWheel.appendChild(outerLetter);
+      }
+      
+      // Create inner wheel
+      const innerWheel = document.createElement('div');
+      innerWheel.className = 'inner-wheel';
+      innerWheel.id = 'inner-wheel';
+      outerWheel.appendChild(innerWheel);
+      
+      // Add inner letters - will be updated by updateCipherWheel
+      updateCipherWheel();
+    }
+    
+    function updateCipherWheel() {
+      const innerWheel = document.getElementById('inner-wheel');
+      
+      // Clear existing inner letters
+      while (innerWheel.firstChild) {
+        innerWheel.removeChild(innerWheel.firstChild);
+      }
+      
+      // Normalize shift to be between 0 and 25
+      const normalizedShift = ((currentShift % 26) + 26) % 26;
+      
+      // Create outer and inner alphabets
+      const alphabet = Array.from({ length: 26 }, (_, i) => String.fromCharCode(65 + i));
+      const shiftedAlphabet = [...alphabet];
+      
+      // Rotate inner alphabet by shift amount
+      for (let i = 0; i < normalizedShift; i++) {
+        shiftedAlphabet.unshift(shiftedAlphabet.pop());
+      }
+      
+      // Add inner letters
+      for (let i = 0; i < shiftedAlphabet.length; i++) {
+        const letter = shiftedAlphabet[i];
+        const angle = (i * 360) / 26;
+        
+        const innerLetter = document.createElement('div');
+        innerLetter.className = 'inner-letter';
+        innerLetter.textContent = letter;
+        innerLetter.style.transform = `rotate(${angle}deg) translate(0, -5.75rem) rotate(-${angle}deg)`;
+        innerWheel.appendChild(innerLetter);
+      }
+      
+      // Add rotation indicator
+      const rotationIndicator = document.createElement('div');
+      rotationIndicator.className = 'rotation-indicator';
+      
+      const indicator = document.createElement('div');
+      indicator.className = 'indicator-arrow';
+      indicator.style.transform = `translateX(-50%) rotate(${normalizedShift * (360/26)}deg)`;
+      
+      rotationIndicator.appendChild(indicator);
+      innerWheel.appendChild(rotationIndicator);
+    }
+    
+    // Initialize when DOM is loaded
+    document.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>
