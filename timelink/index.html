@@ -8,6 +8,8 @@
     <script src="libraries/bootstrap.min.js"></script>
     <link rel="stylesheet" href="libraries/bootstrap.min.css">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="manifest" href="manifest.json">
+
 
     <script type="text/javascript">
         /*! ics.js Wed Aug 20 2014 17:23:02 */
@@ -125,6 +127,16 @@
             <hr>
 
      </footer>
+
+
+<script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('service-worker.js')
+    .then(function(reg) {
+      console.log('Service worker registered.', reg);
+    });
+}
+</script>
 </body>
 
 <script type="text/javascript">
