@@ -8,12 +8,12 @@
   "description": "Timelink PWA",
   "icons": [
     {
-      "src": "icon-192.png",
+      "src": "icons/tl192.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "icon-512.png",
+      "src": "icons/tl512.png",
       "sizes": "512x512",
       "type": "image/png"
     }
