@@ -34,7 +34,7 @@
 			<ul class="navbar-nav mr-auto">
 				<li class="nav-item active">
 					<!-- Notice we use lower-case onClick (or better, use addEventListener) -->
-					<a class="nav-link" href="#" onclick="branch0.climbABranch(app1);">Google <span class="sr-only">(current)</span></a>
+					<a class="nav-link" href="#">Google <span class="sr-only">(current)</span></a>
 				</li>
 				<li class="nav-item">
 					<a class="nav-link" href="#" onclick="branch0.climbABranch(app2);">Yandex</a>
@@ -121,19 +121,23 @@
 	
 			// Attach event listeners for language buttons
 			var langButtons = document.getElementsByClassName('langsel');
-			var i;
-			for (i = 0; i < langButtons.length; i++) {
-				(function(j){
-					langButtons[j].addEventListener('click', function() {
-						// Call climbABranch with the appropriate language object
-						if (this.id === "en") {
-							branch0.climbABranch(en);
-						} else if (this.id === "es") {
-							branch0.climbABranch(es);
-						}
-					}, false);
-				})(i);
+			for (let i = 0; i < langButtons.length; i++) {
+				langButtons[i].onclick = function() {
+					branch0.climbABranch(this.id === "en" ? 'en' : 'es');
+				};
 			}
+			// for (let i = 0; i < langButtons.length; i++) {
+			// 	(function(j){
+			// 		langButtons[j].addEventListener('click', function() {
+			// 			// Call climbABranch with the appropriate language object
+			// 			if (this.id === "en") {
+			// 				branch0.climbABranch(en);
+			// 			} else if (this.id === "es") {
+			// 				branch0.climbABranch(es);
+			// 			}
+			// 		});
+			// 	})(i);
+			// }
 			
 			// Attach event listeners for "go" buttons to fetch JSON data and update page
 			var goButtons = document.getElementsByClassName('go');

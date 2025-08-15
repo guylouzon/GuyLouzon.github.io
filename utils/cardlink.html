@@ -217,9 +217,36 @@
             </div>
             <div class="name" id="contact-name">John Doe</div>
             <div class="title" id="contact-title">Software Engineer</div>
-            <div class="contact-info" id="contact-email">email@example.com</div>
-            <div class="contact-info" id="contact-phone">(123) 456-7890</div>
+
+                <div id="bottom-info" style="display: flex; justify-content: space-between; align-items: center; width: 100%; margin-top: 10px;">
+                    <div id="align-left" style="flex: 1; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-start; margin-left: 10px;">
+                        <div class="contact-info" style="margin-left: 0;">
+                            <i style="font-size: 10px; color: #ADD8E6;" class="fas fa-envelope icon"></i>
+                            <a href="#" id="email-link">
+                                <span id="contact-email">email@example.com</span>
+                            </a>
+                        </div>
+                        <div class="contact-info" style="margin-left: 0;">
+                            <i style="font-size: 10px; color: red;" class="fas fa-phone icon"></i>
+                            <a href="#" id="phone-link">
+                                <span id="contact-phone">(123) 456-7890</span>
+                            </a>
+                        </div>
+                    </div>
+                    <div id="align-right" style="flex: 0 0 auto; display: flex; align-items: center; justify-content: flex-end; margin-right: 10px;">
+                        <a href="#" id="qr-link" class="share-button" style="background: linear-gradient(135deg, red, orange, yellow); color: white; display: inline-block; padding: 10px 18px; text-align: center; border-radius: 5px; font-weight: 500; box-shadow: 0 2px 8px rgba(0,0,0,0.08); width: 47px; height: 47px; margin-right: 10px; ">
+                        <i class="fas fa-qrcode icon"></i>
+                        </a>
+                            
+                        <a href="#" id="share-button" class="share-button" style="background-color: red; color: white; display: inline-block; padding: 10px 18px; text-align: center; border-radius: 5px; font-weight: 500; box-shadow: 0 2px 8px rgba(0,0,0,0.08); width: 47px; height: 47px; ">
+                            <i class="fas fa-share icon"></i>
+                        </a>
+                    </div>
+                </div>
+
         </div>
+
+
 
         <div class="share-bar" id="social-bar">
             <a href="#" id="linkedin-link" target="_blank">
@@ -227,7 +254,7 @@
                 <span>LinkedIn</span>
             </a>
             <a href="#" id="twitter-link" target="_blank">
-                <i class="fab fa-twitter icon"></i>
+                <i class="fab fa-twitter icon"></i> 
                 <span>Twitter</span>
             </a>
             <a href="#" id="github-link" target="_blank">
@@ -346,6 +373,7 @@
             if (urlParams.phone) contactData.phone = urlParams.phone;
             if (urlParams.image) contactData.image = urlParams.image;
             if (urlParams.profileImage) contactData.profileImage = urlParams.profileImage; // Update profile image
+            contactData.self_link = window.location.href; // Add self link
 
             // Update social links if provided in URL
             if (urlParams.social.linkedin) contactData.social.linkedin = urlParams.social.linkedin;
@@ -355,6 +383,27 @@
 
             return contactData;
         }
+
+        document.getElementById('share-button').addEventListener('click', function(event) {
+            event.preventDefault(); // Prevent default link behavior
+
+            if (navigator.share) {
+                // Web Share API is supported
+                navigator.share({
+                    title: document.title,
+                    text: contactData.name + " - " + contactData.title,
+                    url: window.location.href
+                }).catch((error) => console.error('Error sharing', error));
+            } else {
+                // Fallback for unsupported browsers
+                alert('Sharing is not supported on this browser. Please copy and share the link manually.');
+            }
+        });
+
+        
+
+
+            
 
         // Function to load contact data
         function loadContactData() {
@@ -367,6 +416,9 @@
             document.getElementById("profile-image").src = contactData.image;
             document.getElementById("profile-round-image").src = contactData.profileImage; // Set round profile image src
 
+            document.getElementById("email-link").href = 'mailto:' + contactData.email;
+            document.getElementById("phone-link").href = 'tel:' + contactData.phone;
+            document.getElementById("qr-image").src = 'https://api.qrserver.com/v1/create-qr-code/?data=' + encodeURIComponent(contactData.self_link) + '&size=45x45';
             document.getElementById("linkedin-link").href = contactData.social.linkedin;
             document.getElementById("twitter-link").href = contactData.social.twitter;
             document.getElementById("github-link").href = contactData.social.github;
