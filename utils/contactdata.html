@@ -94,32 +94,85 @@
             flex: 1;
         }
 
-        .generate-btn {
-            width: 100%;
+        .button-container {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .app-btn {
+            flex: 1;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
-            padding: 18px;
+            padding: 18px 15px;
             border-radius: 10px;
-            font-size: 1.1rem;
+            font-size: 0.9rem;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
+            gap: 8px;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 0.5px;
+            position: relative;
+            min-height: 56px;
         }
 
-        .generate-btn:hover {
+        .app-btn:hover {
             transform: translateY(-3px);
             box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
         }
 
-        .generate-btn:active {
+        .app-btn:active {
             transform: translateY(-1px);
+        }
+
+        .app-btn.secondary {
+            background: linear-gradient(135deg, #e1e5e9 0%, #f8f9ff 100%);
+            color: #555;
+            border: 2px solid #e1e5e9;
+        }
+
+        .app-btn.secondary:hover {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: #667eea;
+        }
+
+        .app-btn .tooltip {
+            position: absolute;
+            bottom: -35px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #333;
+            color: white;
+            padding: 5px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        .app-btn:hover .tooltip {
+            opacity: 1;
+        }
+
+        .btn-icon {
+            width: 20px;
+            height: 20px;
+            fill: currentColor;
+        }
+
+        .qr-icon {
+            width: 24px;
+            height: 24px;
+            fill: currentColor;
         }
 
         .qr-icon {
@@ -243,6 +296,32 @@
                 padding: 30px 20px;
                 margin: 20px;
             }
+            
+            .button-container {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .generate-btn {
+                min-width: auto;
+            }
+            
+            .action-btn {
+                width: 100%;
+                justify-content: flex-start;
+                gap: 10px;
+            }
+            
+            .action-btn .tooltip {
+                position: static;
+                opacity: 1;
+                background: none;
+                color: inherit;
+                padding: 0;
+                font-size: inherit;
+                pointer-events: auto;
+                transform: none;
+            }
         }
     </style>
 </head>
@@ -273,12 +352,38 @@
                 <input type="url" id="linkedin" name="linkedin" placeholder="https://linkedin.com/in/username" required>
             </div>
             
-            <button type="submit" class="generate-btn">
-                <svg class="qr-icon" viewBox="0 0 24 24">
-                    <path d="M3,11H5V13H3V11M11,5H13V9H11V5M9,11H13V15H9V11M15,11H17V13H15V11M19,11H21V13H19V11M21,9H15V15H21V9M21,19H15V21H21V19M3,5H9V11H3V5M5,7V9H7V7H5M3,19H9V21H3V19M5,19V21H7V19H5M19,5H21V9H19V5Z"/>
-                </svg>
-                Generate QR Codes
-            </button>
+            <div class="button-container">
+                <button type="submit" class="app-btn">
+                    <svg class="qr-icon" viewBox="0 0 24 24">
+                        <path d="M3,11H5V13H3V11M11,5H13V9H11V5M9,11H13V15H9V11M15,11H17V13H15V11M19,11H21V13H19V11M21,9H15V15H21V9M21,19H15V21H21V19M3,5H9V11H3V5M5,7V9H7V7H5M3,19H9V21H3V19M5,19V21H7V19H5M19,5H21V9H19V5Z"/>
+                    </svg>
+                    QR Codes
+                </button>
+                
+                <button type="button" class="app-btn secondary" id="saveBtn">
+                    <svg class="btn-icon" viewBox="0 0 24 24">
+                        <path d="M15,9H5V5H15M12,19A3,3 0 0,1 9,16A3,3 0 0,1 12,13A3,3 0 0,1 15,16A3,3 0 0,1 12,19M17,3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V7L17,3Z"/>
+                    </svg>
+                    Save
+                    <span class="tooltip">Save to URL</span>
+                </button>
+                
+                <button type="button" class="app-btn secondary" id="shareBtn">
+                    <svg class="btn-icon" viewBox="0 0 24 24">
+                        <path d="M18,16.08C17.24,16.08 16.56,16.38 16.04,16.85L8.91,12.7C8.96,12.47 9,12.24 9,12C9,11.76 8.96,11.53 8.91,11.3L15.96,7.19C16.5,7.69 17.21,8 18,8A3,3 0 0,0 21,5A3,3 0 0,0 18,2A3,3 0 0,0 15,5C15,5.24 15.04,5.47 15.09,5.7L8.04,9.81C7.5,9.31 6.79,9 6,9A3,3 0 0,0 3,12A3,3 0 0,0 6,15C6.79,15 7.5,14.69 8.04,14.19L15.16,18.34C15.11,18.55 15.08,18.77 15.08,19C15.08,20.61 16.39,21.91 18,21.91C19.61,21.91 20.92,20.6 20.92,19A2.92,2.92 0 0,0 18,16.08Z"/>
+                    </svg>
+                    Share
+                    <span class="tooltip">Share link</span>
+                </button>
+                
+                <button type="button" class="app-btn secondary" id="downloadBtn">
+                    <svg class="btn-icon" viewBox="0 0 24 24">
+                        <path d="M5,20H19V18H5M19,9H15V3H9V9H5L12,16L19,9Z"/>
+                    </svg>
+                    Download
+                    <span class="tooltip">Download vCard</span>
+                </button>
+            </div>
         </form>
     </div>
 
@@ -297,6 +402,9 @@
         const popup = document.getElementById('popupOverlay');
         const closeBtn = document.getElementById('closeBtn');
         const qrGrid = document.getElementById('qrGrid');
+        const saveBtn = document.getElementById('saveBtn');
+        const shareBtn = document.getElementById('shareBtn');
+        const downloadBtn = document.getElementById('downloadBtn');
 
         form.addEventListener('submit', function(e) {
             e.preventDefault();
@@ -317,6 +425,133 @@
         popup.addEventListener('click', function(e) {
             if (e.target === popup) {
                 closePopup();
+            }
+        });
+
+        // Save button functionality
+        saveBtn.addEventListener('click', function() {
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData);
+            
+            if (!data.name || !data.email || !data.countryCode || !data.phone || !data.linkedin) {
+                alert('Please fill in all fields first');
+                return;
+            }
+            
+            const params = new URLSearchParams({
+                name: data.name,
+                email: data.email,
+                countryCode: data.countryCode,
+                phone: data.phone,
+                linkedin: data.linkedin
+            });
+            
+            const newUrl = window.location.origin + window.location.pathname + '?' + params.toString();
+            window.history.pushState({}, '', newUrl);
+            
+            // Show success feedback
+            saveBtn.innerHTML = '<svg class="btn-icon" viewBox="0 0 24 24"><path d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"/></svg><span class="tooltip">Saved!</span>';
+            setTimeout(() => {
+                saveBtn.innerHTML = '<svg class="btn-icon" viewBox="0 0 24 24"><path d="M15,9H5V5H15M12,19A3,3 0 0,1 9,16A3,3 0 0,1 12,13A3,3 0 0,1 15,16A3,3 0 0,1 12,19M17,3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V7L17,3Z"/></svg><span class="tooltip">Save</span>';
+            }, 2000);
+        });
+
+        // Share button functionality
+        shareBtn.addEventListener('click', async function() {
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData);
+            
+            if (!data.name || !data.email || !data.countryCode || !data.phone || !data.linkedin) {
+                alert('Please fill in all fields first');
+                return;
+            }
+            
+            const params = new URLSearchParams({
+                name: data.name,
+                email: data.email,
+                countryCode: data.countryCode,
+                phone: data.phone,
+                linkedin: data.linkedin
+            });
+            
+            const shareUrl = window.location.origin + window.location.pathname + '?' + params.toString();
+            
+            if (navigator.share) {
+                try {
+                    await navigator.share({
+                        title: `${data.name}'s Contact Information`,
+                        text: `Contact details for ${data.name}`,
+                        url: shareUrl
+                    });
+                } catch (err) {
+                    console.log('Error sharing:', err);
+                    fallbackShare(shareUrl);
+                }
+            } else {
+                fallbackShare(shareUrl);
+            }
+        });
+
+        function fallbackShare(url) {
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(url).then(() => {
+                    shareBtn.innerHTML = '<svg class="btn-icon" viewBox="0 0 24 24"><path d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"/></svg><span class="tooltip">Copied to clipboard!</span>';
+                    setTimeout(() => {
+                        shareBtn.innerHTML = '<svg class="btn-icon" viewBox="0 0 24 24"><path d="M18,16.08C17.24,16.08 16.56,16.38 16.04,16.85L8.91,12.7C8.96,12.47 9,12.24 9,12C9,11.76 8.96,11.53 8.91,11.3L15.96,7.19C16.5,7.69 17.21,8 18,8A3,3 0 0,0 21,5A3,3 0 0,0 18,2A3,3 0 0,0 15,5C15,5.24 15.04,5.47 15.09,5.7L8.04,9.81C7.5,9.31 6.79,9 6,9A3,3 0 0,0 3,12A3,3 0 0,0 6,15C6.79,15 7.5,14.69 8.04,14.19L15.16,18.34C15.11,18.55 15.08,18.77 15.08,19C15.08,20.61 16.39,21.91 18,21.91C19.61,21.91 20.92,20.6 20.92,19A2.92,2.92 0 0,0 18,16.08Z"/></svg><span class="tooltip">Share</span>';
+                    }, 2000);
+                });
+            } else {
+                alert('Link: ' + url);
+            }
+        }
+
+        // Download vCard functionality
+        downloadBtn.addEventListener('click', function() {
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData);
+            
+            if (!data.name || !data.email || !data.countryCode || !data.phone || !data.linkedin) {
+                alert('Please fill in all fields first');
+                return;
+            }
+            
+            const fullPhone = data.countryCode + data.phone;
+            
+            const vCardContent = `BEGIN:VCARD
+VERSION:3.0
+FN:${data.name}
+N:${data.name};;;;
+EMAIL:${data.email}
+TEL:${fullPhone}
+URL:${data.linkedin}
+END:VCARD`;
+            
+            const blob = new Blob([vCardContent], { type: 'text/vcard' });
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `${data.name.replace(/\s+/g, '_')}_contact.vcf`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            window.URL.revokeObjectURL(url);
+            
+            // Show success feedback
+            downloadBtn.innerHTML = '<svg class="btn-icon" viewBox="0 0 24 24"><path d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"/></svg><span class="tooltip">Downloaded!</span>';
+            setTimeout(() => {
+                downloadBtn.innerHTML = '<svg class="btn-icon" viewBox="0 0 24 24"><path d="M5,20H19V18H5M19,9H15V3H9V9H5L12,16L19,9Z"/></svg><span class="tooltip">Download vCard</span>';
+            }, 2000);
+        });
+
+        // Load data from URL parameters on page load
+        window.addEventListener('load', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.has('name')) {
+                document.getElementById('name').value = urlParams.get('name') || '';
+                document.getElementById('email').value = urlParams.get('email') || '';
+                document.getElementById('countryCode').value = urlParams.get('countryCode') || '';
+                document.getElementById('phone').value = urlParams.get('phone') || '';
+                document.getElementById('linkedin').value = urlParams.get('linkedin') || '';
             }
         });
 
