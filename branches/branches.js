@@ -1,7 +1,7 @@
 class branches {
 	/*
 	(c) Guy Louzon, guylou@outlook.com, GNU 3
-	https://www.github.com/GuyLou/branches.js/
+	https://www.github.com/GuyLouzon/branches.js/
 	*/
 	
 	/*
