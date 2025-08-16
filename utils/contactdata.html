@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contact QR Generator</title>
+    <title>Contact QR me</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
     <style>
         * {
@@ -96,8 +96,18 @@
 
         .button-container {
             display: flex;
-            gap: 12px;
-            align-items: center;
+            width: 100%;
+            max-width: 800px;
+            gap: 15px;
+            margin: 0 auto;
+        }
+
+     .button-container {
+            display: flex;
+            width: 100%;
+            max-width: 800px;
+            gap: 15px;
+            margin: 0 auto;
         }
 
         .app-btn {
@@ -114,11 +124,13 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            flex-direction: column;
             gap: 8px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
             position: relative;
-            min-height: 56px;
+            min-height: 80px;
+            max-width: none;
         }
 
         .app-btn:hover {
@@ -323,11 +335,28 @@
                 transform: none;
             }
         }
+
+        footer {
+            clear: both;
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+
+        footer a {
+            margin: 0 10px;
+        }
+
+        .icons {
+            width: 24px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Contact QR Generator</h1>
+        <h1>Contact QR Me</h1>
         <form id="contactForm">
             <div class="form-group">
                 <label for="name">Name</label>
@@ -359,7 +388,7 @@
                     </svg>
                     QR Codes
                 </button>
-                
+            
                 <button type="button" class="app-btn secondary" id="saveBtn">
                     <svg class="btn-icon" viewBox="0 0 24 24">
                         <path d="M15,9H5V5H15M12,19A3,3 0 0,1 9,16A3,3 0 0,1 12,13A3,3 0 0,1 15,16A3,3 0 0,1 12,19M17,3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V7L17,3Z"/>
@@ -367,7 +396,7 @@
                     Save
                     <span class="tooltip">Save to URL</span>
                 </button>
-                
+            
                 <button type="button" class="app-btn secondary" id="shareBtn">
                     <svg class="btn-icon" viewBox="0 0 24 24">
                         <path d="M18,16.08C17.24,16.08 16.56,16.38 16.04,16.85L8.91,12.7C8.96,12.47 9,12.24 9,12C9,11.76 8.96,11.53 8.91,11.3L15.96,7.19C16.5,7.69 17.21,8 18,8A3,3 0 0,0 21,5A3,3 0 0,0 18,2A3,3 0 0,0 15,5C15,5.24 15.04,5.47 15.09,5.7L8.04,9.81C7.5,9.31 6.79,9 6,9A3,3 0 0,0 3,12A3,3 0 0,0 6,15C6.79,15 7.5,14.69 8.04,14.19L15.16,18.34C15.11,18.55 15.08,18.77 15.08,19C15.08,20.61 16.39,21.91 18,21.91C19.61,21.91 20.92,20.6 20.92,19A2.92,2.92 0 0,0 18,16.08Z"/>
@@ -375,7 +404,7 @@
                     Share
                     <span class="tooltip">Share link</span>
                 </button>
-                
+            
                 <button type="button" class="app-btn secondary" id="downloadBtn">
                     <svg class="btn-icon" viewBox="0 0 24 24">
                         <path d="M5,20H19V18H5M19,9H15V3H9V9H5L12,16L19,9Z"/>
@@ -397,6 +426,21 @@
         </div>
     </div>
 
+        <hr>
+
+    <footer>
+
+        <div class="text-center center-block">
+            <br>
+            <div class="center-block">
+                <a href="https://twitter.com/@Guylouzon"><img src="../icons/twitter.png" class="icons"></a>
+                <a href="https://www.github.com/GuyLou/"><img src="../icons/githubicon.png" class="icons"></a>
+                <a href="https://www.linkedin.com/in/guylouzon/"><img src="../icons/linkedinicon.png" class="icons"></a>
+                <a href="https://www.buymeacoffee.com/guylouzon"><img src="../icons/buymeacoffee.png" class="icons"></a>
+            </div>
+        </div>
+    </footer>
+    
     <script>
         const form = document.getElementById('contactForm');
         const popup = document.getElementById('popupOverlay');
@@ -405,6 +449,7 @@
         const saveBtn = document.getElementById('saveBtn');
         const shareBtn = document.getElementById('shareBtn');
         const downloadBtn = document.getElementById('downloadBtn');
+
 
         form.addEventListener('submit', function(e) {
             e.preventDefault();
@@ -559,17 +604,23 @@ END:VCARD`;
             const formData = new FormData(form);
             const data = Object.fromEntries(formData);
             
-            console.log('Form data:', data); // Debug log
+            //console.log('Form data:', data); // Debug log
             
             // Format phone number - remove any spaces and ensure proper format
             const cleanCountryCode = data.countryCode.trim();
             const cleanPhone = data.phone.trim().replace(/\s+/g, '');
             const fullPhone = cleanCountryCode + cleanPhone;
             
-            console.log('Full phone:', fullPhone); // Debug log
+            //console.log('Full phone:', fullPhone); // Debug log
             
             // Create QR code data
             const qrData = [
+                {
+                    title: 'Contant QR me',
+                    data: window.location.href,
+                    color: '#764ba2'
+                    
+                },
                 {
                     title: 'Email',
                     data: `mailto:${data.email}?subject=Hello ${data.name}`,
