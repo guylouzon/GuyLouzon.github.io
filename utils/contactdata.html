@@ -12,10 +12,19 @@
             box-sizing: border-box;
         }
 
+        /* --- KEY CHANGE 1: Body is now a vertical flex container --- */
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
+            display: flex;
+            flex-direction: column; /* Stacks children (main, footer) vertically */
+        }
+
+        /* --- KEY CHANGE 2: New <main> tag to hold content --- */
+        /* It grows to push the footer down and also centers the form */
+        main {
+            flex-grow: 1; /* This is the magic: it fills all available vertical space */
             display: flex;
             align-items: center;
             justify-content: center;
@@ -32,11 +41,9 @@
             transform: translateY(0);
             transition: transform 0.3s ease;
         }
-
         .container:hover {
             transform: translateY(-5px);
         }
-
         h1 {
             text-align: center;
             color: #333;
@@ -44,12 +51,10 @@
             font-size: 2rem;
             font-weight: 300;
         }
-
         .form-group {
             margin-bottom: 25px;
             position: relative;
         }
-
         label {
             display: block;
             margin-bottom: 8px;
@@ -59,7 +64,6 @@
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
-
         input[type="text"],
         input[type="email"],
         input[type="tel"],
@@ -72,7 +76,6 @@
             transition: all 0.3s ease;
             background: #fafafa;
         }
-
         input:focus {
             outline: none;
             border-color: #667eea;
@@ -80,20 +83,16 @@
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
         }
-
         .phone-container {
             display: flex;
             gap: 10px;
         }
-
         .country-code {
             flex: 0 0 100px;
         }
-
         .phone-number {
             flex: 1;
         }
-
         .button-container {
             display: flex;
             width: 100%;
@@ -101,15 +100,6 @@
             gap: 15px;
             margin: 0 auto;
         }
-
-     .button-container {
-            display: flex;
-            width: 100%;
-            max-width: 800px;
-            gap: 15px;
-            margin: 0 auto;
-        }
-
         .app-btn {
             flex: 1;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -132,28 +122,23 @@
             min-height: 80px;
             max-width: none;
         }
-
         .app-btn:hover {
             transform: translateY(-3px);
             box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
         }
-
         .app-btn:active {
             transform: translateY(-1px);
         }
-
         .app-btn.secondary {
             background: linear-gradient(135deg, #e1e5e9 0%, #f8f9ff 100%);
             color: #555;
             border: 2px solid #e1e5e9;
         }
-
         .app-btn.secondary:hover {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border-color: #667eea;
         }
-
         .app-btn .tooltip {
             position: absolute;
             bottom: -35px;
@@ -170,29 +155,19 @@
             pointer-events: none;
             z-index: 1000;
         }
-
         .app-btn:hover .tooltip {
             opacity: 1;
         }
-
         .btn-icon {
             width: 20px;
             height: 20px;
             fill: currentColor;
         }
-
         .qr-icon {
             width: 24px;
             height: 24px;
             fill: currentColor;
         }
-
-        .qr-icon {
-            width: 24px;
-            height: 24px;
-            fill: currentColor;
-        }
-
         .popup-overlay {
             position: fixed;
             top: 0;
@@ -206,12 +181,10 @@
             z-index: 1000;
             backdrop-filter: blur(5px);
         }
-
         .popup-overlay.show {
             display: flex;
             animation: fadeIn 0.3s ease;
         }
-
         .popup-content {
             background: white;
             padding: 40px;
@@ -222,7 +195,6 @@
             position: relative;
             animation: slideIn 0.3s ease;
         }
-
         .close-btn {
             position: absolute;
             top: 15px;
@@ -240,19 +212,16 @@
             border-radius: 50%;
             transition: all 0.3s ease;
         }
-
         .close-btn:hover {
             background: #f0f0f0;
             color: #333;
         }
-
         .qr-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 30px;
             margin-top: 20px;
         }
-
         .qr-item {
             text-align: center;
             padding: 20px;
@@ -260,189 +229,139 @@
             background: #f8f9ff;
             transition: transform 0.3s ease;
         }
-
         .qr-item:hover {
             transform: translateY(-5px);
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
         }
-
         .qr-item h3 {
             margin-bottom: 15px;
             color: #333;
             font-size: 1.1rem;
         }
-
         .qr-code {
             margin: 15px auto;
             border: 3px solid white;
             border-radius: 10px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
-
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
         }
-
         @keyframes slideIn {
-            from { 
-                opacity: 0; 
-                transform: translateY(-30px) scale(0.95); 
+            from {
+                opacity: 0;
+                transform: translateY(-30px) scale(0.95);
             }
-            to { 
-                opacity: 1; 
-                transform: translateY(0) scale(1); 
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
             }
         }
-
         @media (max-width: 600px) {
             .container {
                 padding: 30px 20px;
             }
-            
             .qr-grid {
                 grid-template-columns: 1fr;
             }
-            
             .popup-content {
                 padding: 30px 20px;
                 margin: 20px;
             }
-            
             .button-container {
                 flex-direction: column;
                 gap: 10px;
             }
-            
-            .generate-btn {
-                min-width: auto;
-            }
-            
-            .action-btn {
-                width: 100%;
-                justify-content: flex-start;
-                gap: 10px;
-            }
-            
-            .action-btn .tooltip {
-                position: static;
-                opacity: 1;
-                background: none;
-                color: inherit;
-                padding: 0;
-                font-size: inherit;
-                pointer-events: auto;
-                transform: none;
-            }
         }
 
+        /* --- KEY CHANGE 3: Simplified footer styling --- */
+        /* Removed absolute positioning. It's now part of the normal document flow. */
         footer {
-            clear: both;
-            position: absolute;
-            bottom: 0;
             width: 100%;
-            display: flex;
-            justify-content: center;
+            padding: 20px 0;
+            text-align: center;
+            color: white; /* Optional: Make text visible on gradient */
         }
-
         footer a {
             margin: 0 10px;
         }
-
         .icons {
             width: 24px;
-              box-shadow: 0 0 15px 5px rgba(94, 2, 131, 0.5); /* horizontal-offset vertical-offset blur-radius spread-radius color */
+            box-shadow: 0 0 15px 5px rgba(94, 2, 131, 0.5);
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Contact QR Me</h1>
-        <form id="contactForm">
-            <div class="form-group">
-                <label for="name">Name</label>
-                <input type="text" id="name" name="name" required>
-            </div>
+    <main>
+        <div class="container">
+            <h1>Contact QR Me
+            </h1>
             
-            <div class="form-group">
-                <label for="email">Email</label>
-                <input type="email" id="email" name="email" required>
-            </div>
-            
-            <div class="form-group">
-                <label>Phone</label>
-                <div class="phone-container">
-                    <input type="text" id="countryCode" name="countryCode" placeholder="+1" class="country-code" required>
-                    <input type="tel" id="phone" name="phone" placeholder="Phone number" class="phone-number" required>
+            <form id="contactForm">
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" id="name" name="name" required>
                 </div>
-            </div>
-            
-            <div class="form-group">
-                <label for="linkedin">LinkedIn</label>
-                <input type="url" id="linkedin" name="linkedin" placeholder="https://linkedin.com/in/username" required>
-            </div>
-            
-            <div class="button-container">
-                <button type="submit" class="app-btn">
-                    <svg class="qr-icon" viewBox="0 0 24 24">
-                        <path d="M3,11H5V13H3V11M11,5H13V9H11V5M9,11H13V15H9V11M15,11H17V13H15V11M19,11H21V13H19V11M21,9H15V15H21V9M21,19H15V21H21V19M3,5H9V11H3V5M5,7V9H7V7H5M3,19H9V21H3V19M5,19V21H7V19H5M19,5H21V9H19V5Z"/>
-                    </svg>
-                    QR Codes
-                </button>
-            
-                <button type="button" class="app-btn secondary" id="saveBtn">
-                    <svg class="btn-icon" viewBox="0 0 24 24">
-                        <path d="M15,9H5V5H15M12,19A3,3 0 0,1 9,16A3,3 0 0,1 12,13A3,3 0 0,1 15,16A3,3 0 0,1 12,19M17,3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V7L17,3Z"/>
-                    </svg>
-                    Save
-                    <span class="tooltip">Save to URL</span>
-                </button>
-            
-                <button type="button" class="app-btn secondary" id="shareBtn">
-                    <svg class="btn-icon" viewBox="0 0 24 24">
-                        <path d="M18,16.08C17.24,16.08 16.56,16.38 16.04,16.85L8.91,12.7C8.96,12.47 9,12.24 9,12C9,11.76 8.96,11.53 8.91,11.3L15.96,7.19C16.5,7.69 17.21,8 18,8A3,3 0 0,0 21,5A3,3 0 0,0 18,2A3,3 0 0,0 15,5C15,5.24 15.04,5.47 15.09,5.7L8.04,9.81C7.5,9.31 6.79,9 6,9A3,3 0 0,0 3,12A3,3 0 0,0 6,15C6.79,15 7.5,14.69 8.04,14.19L15.16,18.34C15.11,18.55 15.08,18.77 15.08,19C15.08,20.61 16.39,21.91 18,21.91C19.61,21.91 20.92,20.6 20.92,19A2.92,2.92 0 0,0 18,16.08Z"/>
-                    </svg>
-                    Share
-                    <span class="tooltip">Share link</span>
-                </button>
-            
-                <button type="button" class="app-btn secondary" id="downloadBtn">
-                    <svg class="btn-icon" viewBox="0 0 24 24">
-                        <path d="M5,20H19V18H5M19,9H15V3H9V9H5L12,16L19,9Z"/>
-                    </svg>
-                    Download
-                    <span class="tooltip">Download vCard</span>
-                </button>
-            </div>
-        </form>
-    </div>
-
-    <div id="popupOverlay" class="popup-overlay">
-        <div class="popup-content">
-            <button class="close-btn" id="closeBtn">&times;</button>
-            <h2 style="text-align: center; margin-bottom: 30px; color: #333;">Your Contact QR Codes</h2>
-            <div class="qr-grid" id="qrGrid">
-                <!-- QR codes will be generated here -->
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label>Phone</label>
+                    <div class="phone-container">
+                        <input type="text" id="countryCode" name="countryCode" placeholder="+1" class="country-code" required>
+                        <input type="tel" id="phone" name="phone" placeholder="Phone number" class="phone-number" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="linkedin">LinkedIn</label>
+                    <input type="url" id="linkedin" name="linkedin" placeholder="https://linkedin.com/in/username" required>
+                </div>
+                <div class="button-container">
+                    <button type="submit" class="app-btn">
+                        <svg class="qr-icon" viewBox="0 0 24 24"><path d="M3,11H5V13H3V11M11,5H13V9H11V5M9,11H13V15H9V11M15,11H17V13H15V11M19,11H21V13H19V11M21,9H15V15H21V9M21,19H15V21H21V19M3,5H9V11H3V5M5,7V9H7V7H5M3,19H9V21H3V19M5,19V21H7V19H5M19,5H21V9H19V5Z"/></svg>
+                        QR Codes
+                    </button>
+                    <button type="button" class="app-btn secondary" id="saveBtn">
+                        <svg class="btn-icon" viewBox="0 0 24 24"><path d="M15,9H5V5H15M12,19A3,3 0 0,1 9,16A3,3 0 0,1 12,13A3,3 0 0,1 15,16A3,3 0 0,1 12,19M17,3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V7L17,3Z"/></svg>
+                        Save
+                        <span class="tooltip">Save to URL</span>
+                    </button>
+                    <button type="button" class="app-btn secondary" id="shareBtn">
+                        <svg class="btn-icon" viewBox="0 0 24 24"><path d="M18,16.08C17.24,16.08 16.56,16.38 16.04,16.85L8.91,12.7C8.96,12.47 9,12.24 9,12C9,11.76 8.96,11.53 8.91,11.3L15.96,7.19C16.5,7.69 17.21,8 18,8A3,3 0 0,0 21,5A3,3 0 0,0 18,2A3,3 0 0,0 15,5C15,5.24 15.04,5.47 15.09,5.7L8.04,9.81C7.5,9.31 6.79,9 6,9A3,3 0 0,0 3,12A3,3 0 0,0 6,15C6.79,15 7.5,14.69 8.04,14.19L15.16,18.34C15.11,18.55 15.08,18.77 15.08,19C15.08,20.61 16.39,21.91 18,21.91C19.61,21.91 20.92,20.6 20.92,19A2.92,2.92 0 0,0 18,16.08Z"/></svg>
+                        Share
+                        <span class="tooltip">Share link</span>
+                    </button>
+                    <button type="button" class="app-btn secondary" id="downloadBtn">
+                        <svg class="btn-icon" viewBox="0 0 24 24"><path d="M5,20H19V18H5M19,9H15V3H9V9H5L12,16L19,9Z"/></svg>
+                        Download
+                        <span class="tooltip">Download vCard</span>
+                    </button>
+ 
+                </div>
+            </form>
+        </div>
+        <div id="popupOverlay" class="popup-overlay">
+            <div class="popup-content">
+                <button class="close-btn" id="closeBtn">&times;</button>
+                <h2 style="text-align: center; margin-bottom: 30px; color: #333;">Your Contact QR Codes</h2>
+                <div class="qr-grid" id="qrGrid">
+                    </div>
             </div>
         </div>
-    </div>
-
-        <hr>
-
+    </main>
     <footer>
-
-        <div class="text-center center-block">
-            <br>
-            <div class="center-block">
-                <a href="https://twitter.com/@Guylouzon"><img src="../icons/twitter.png" class="icons"></a>
-                <a href="https://www.github.com/GuyLouzon/"><img src="../icons/githubicon.png" class="icons"></a>
-                <a href="https://www.linkedin.com/in/guylouzon/"><img src="../icons/linkedinicon.png" class="icons"></a>
-                <a href="https://www.buymeacoffee.com/guylouzon"><img src="../icons/buymeacoffee.png" class="icons"></a>
-            </div>
-        </div>
+        <a href="" id="newContact">
+            <svg class="icons" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="24" height="24" rx="4" fill="red"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="white" font-size="10px">New</text></svg>
+        </a>
+        <a href="https://www.github.com/GuyLouzon/"><img alt="GitHub" src="../icons/githubicon.png" class="icons"></a>
+        <a href="https://www.linkedin.com/in/guylouzon/"><img alt="LinkedIn" src="../icons/linkedinicon.png" class="icons"></a>
+        <a href="https://www.buymeacoffee.com/guylouzon"><img alt="Buy Me A Coffee" src="../icons/buymeacoffee.png" class="icons"></a>
     </footer>
-    
+
     <script>
+        // Your JavaScript remains the same
         const form = document.getElementById('contactForm');
         const popup = document.getElementById('popupOverlay');
         const closeBtn = document.getElementById('closeBtn');
@@ -450,40 +369,32 @@
         const saveBtn = document.getElementById('saveBtn');
         const shareBtn = document.getElementById('shareBtn');
         const downloadBtn = document.getElementById('downloadBtn');
-
-
+        document.getElementById('newContact').addEventListener('click', function() {
+            form.reset();
+        });
         form.addEventListener('submit', function(e) {
             e.preventDefault();
-            
-            // Validate form
             const formData = new FormData(form);
             const data = Object.fromEntries(formData);
-            
             if (!data.name || !data.email || !data.countryCode || !data.phone || !data.linkedin) {
                 alert('Please fill in all fields');
                 return;
             }
-            
             generateQRCodes();
         });
-
         closeBtn.addEventListener('click', closePopup);
         popup.addEventListener('click', function(e) {
             if (e.target === popup) {
                 closePopup();
             }
         });
-
-        // Save button functionality
         saveBtn.addEventListener('click', function() {
             const formData = new FormData(form);
             const data = Object.fromEntries(formData);
-            
             if (!data.name || !data.email || !data.countryCode || !data.phone || !data.linkedin) {
                 alert('Please fill in all fields first');
                 return;
             }
-            
             const params = new URLSearchParams({
                 name: data.name,
                 email: data.email,
@@ -491,27 +402,20 @@
                 phone: data.phone,
                 linkedin: data.linkedin
             });
-            
             const newUrl = window.location.origin + window.location.pathname + '?' + params.toString();
             window.history.pushState({}, '', newUrl);
-            
-            // Show success feedback
             saveBtn.innerHTML = '<svg class="btn-icon" viewBox="0 0 24 24"><path d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"/></svg><span class="tooltip">Saved!</span>';
             setTimeout(() => {
                 saveBtn.innerHTML = '<svg class="btn-icon" viewBox="0 0 24 24"><path d="M15,9H5V5H15M12,19A3,3 0 0,1 9,16A3,3 0 0,1 12,13A3,3 0 0,1 15,16A3,3 0 0,1 12,19M17,3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V7L17,3Z"/></svg><span class="tooltip">Save</span>';
             }, 2000);
         });
-
-        // Share button functionality
         shareBtn.addEventListener('click', async function() {
             const formData = new FormData(form);
             const data = Object.fromEntries(formData);
-            
             if (!data.name || !data.email || !data.countryCode || !data.phone || !data.linkedin) {
                 alert('Please fill in all fields first');
                 return;
             }
-            
             const params = new URLSearchParams({
                 name: data.name,
                 email: data.email,
@@ -519,9 +423,7 @@
                 phone: data.phone,
                 linkedin: data.linkedin
             });
-            
             const shareUrl = window.location.origin + window.location.pathname + '?' + params.toString();
-            
             if (navigator.share) {
                 try {
                     await navigator.share({
@@ -550,29 +452,18 @@
                 alert('Link: ' + url);
             }
         }
-
-        // Download vCard functionality
         downloadBtn.addEventListener('click', function() {
             const formData = new FormData(form);
             const data = Object.fromEntries(formData);
-            
             if (!data.name || !data.email || !data.countryCode || !data.phone || !data.linkedin) {
                 alert('Please fill in all fields first');
                 return;
             }
-            
             const fullPhone = data.countryCode + data.phone;
-            
-            const vCardContent = `BEGIN:VCARD
-VERSION:3.0
-FN:${data.name}
-N:${data.name};;;;
-EMAIL:${data.email}
-TEL:${fullPhone}
-URL:${data.linkedin}
-END:VCARD`;
-            
-            const blob = new Blob([vCardContent], { type: 'text/vcard' });
+            const vCardContent = `BEGIN:VCARD\nVERSION:3.0\nFN:${data.name}\nN:${data.name};;;\nEMAIL:${data.email}\nTEL:${fullPhone}\nURL:${data.linkedin}\nEND:VCARD`;
+            const blob = new Blob([vCardContent], {
+                type: 'text/vcard'
+            });
             const url = window.URL.createObjectURL(blob);
             const link = document.createElement('a');
             link.href = url;
@@ -581,15 +472,11 @@ END:VCARD`;
             link.click();
             document.body.removeChild(link);
             window.URL.revokeObjectURL(url);
-            
-            // Show success feedback
             downloadBtn.innerHTML = '<svg class="btn-icon" viewBox="0 0 24 24"><path d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"/></svg><span class="tooltip">Downloaded!</span>';
             setTimeout(() => {
                 downloadBtn.innerHTML = '<svg class="btn-icon" viewBox="0 0 24 24"><path d="M5,20H19V18H5M19,9H15V3H9V9H5L12,16L19,9Z"/></svg><span class="tooltip">Download vCard</span>';
             }, 2000);
         });
-
-        // Load data from URL parameters on page load
         window.addEventListener('load', function() {
             const urlParams = new URLSearchParams(window.location.search);
             if (urlParams.has('name')) {
@@ -604,68 +491,43 @@ END:VCARD`;
         function generateQRCodes() {
             const formData = new FormData(form);
             const data = Object.fromEntries(formData);
-            
-            //console.log('Form data:', data); // Debug log
-            
-            // Format phone number - remove any spaces and ensure proper format
             const cleanCountryCode = data.countryCode.trim();
             const cleanPhone = data.phone.trim().replace(/\s+/g, '');
             const fullPhone = cleanCountryCode + cleanPhone;
-            
-            //console.log('Full phone:', fullPhone); // Debug log
-            
-            // Create QR code data
-            const qrData = [
-                {
-                    title: 'Contant QR me',
-                    data: window.location.href,
-                    color: '#764ba2'
-                    
-                },
-                {
-                    title: 'Email',
-                    data: `mailto:${data.email}?subject=Hello ${data.name}`,
-                    color: '#4285f4'
-                },
-                {
-                    title: 'Phone Call',
-                    data: `tel:${fullPhone}`,
-                    color: '#34a853'
-                },
-                {
-                    title: 'WhatsApp',
-                    data: `https://wa.me/${fullPhone.replace('+', '')}`,
-                    color: '#25d366'
-                },
-                {
-                    title: 'LinkedIn',
-                    data: data.linkedin,
-                    color: '#0077b5'
-                }
-            ];
-
-            console.log('QR Data:', qrData); // Debug log
-
-            // Clear previous QR codes
+            const qrData = [{
+                title: 'Contact QR me',
+                data: window.location.href,
+                color: '#764ba2'
+            }, {
+                title: 'Email',
+                data: `mailto:${data.email}?subject=Hello ${data.name}`,
+                color: '#4285f4'
+            }, {
+                title: 'Phone Call',
+                data: `tel:${fullPhone}`,
+                color: '#34a853'
+            }, {
+                title: 'WhatsApp',
+                data: `https://wa.me/${fullPhone.replace('+', '')}`,
+                color: '#25d366'
+            }, {
+                title: 'LinkedIn',
+                data: data.linkedin,
+                color: '#0077b5'
+            }];
             qrGrid.innerHTML = '';
-
-            // Generate QR codes with error handling
             qrData.forEach((item, index) => {
                 try {
                     const qrItem = document.createElement('div');
                     qrItem.className = 'qr-item';
                     qrItem.style.borderTop = `4px solid ${item.color}`;
-                    
                     const title = document.createElement('h3');
                     title.textContent = item.title;
                     title.style.color = item.color;
-                    
                     const canvas = document.createElement('canvas');
                     canvas.className = 'qr-code';
-                    
-                    // Generate QR code with error handling
                     try {
-                        const qr = new QRious({
+                        new QRious({
                             element: canvas,
                             value: item.data,
                             size: 150,
@@ -673,16 +535,13 @@ END:VCARD`;
                             background: 'white',
                             level: 'M'
                         });
-                        console.log(`QR code generated for ${item.title}:`, item.data); // Debug log
                     } catch (qrError) {
                         console.error(`Error generating QR for ${item.title}:`, qrError);
-                        // Create fallback text
                         const errorText = document.createElement('p');
                         errorText.textContent = 'QR generation failed';
                         errorText.style.color = '#ff0000';
                         qrItem.appendChild(errorText);
                     }
-                    
                     qrItem.appendChild(title);
                     qrItem.appendChild(canvas);
                     qrGrid.appendChild(qrItem);
@@ -690,19 +549,14 @@ END:VCARD`;
                     console.error(`Error creating QR item for ${item.title}:`, error);
                 }
             });
-
-            console.log('Showing popup...'); // Debug log
-            // Show popup
             popup.classList.add('show');
-            popup.style.display = 'flex'; // Force display
+            popup.style.display = 'flex';
         }
 
         function closePopup() {
             popup.classList.remove('show');
             popup.style.display = 'none';
         }
-
-        // Close popup with Escape key
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape' && popup.classList.contains('show')) {
                 closePopup();
