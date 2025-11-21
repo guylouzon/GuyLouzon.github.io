@@ -13,6 +13,9 @@ Reference date: 2025-11-21
 - [Clearwater Analytics (CWAN) Reverse DCF Analysis](./Clearwater%20Analytics%20%28CWAN%29%20Reverse%20DCF%20Analysis.md) — Reference date: 2025-11-21
 - [Block Inc (XYZ) Fundamental Analysis & Reverse DCF Valuation](./Block%20Inc%20%28XYZ%29%20Fundamental%20Analysis%20%26%20Reverse%20DCF.md) — Reference date: 2025-11-21
 - [JPMorgan (JPM) Fundamental Analysis](./jpmorgn.md) - references date: 2025-11-21
+- [Mercado Libre (MELI) Fundamental Analysis](./mercardo_libre2.md) - references date: 2025-11-21
+- [Mercado Libre 2 (MELI) Fundamental Analysis](./mercardo_libre2.md) - references date: 2025-11-21
+- [Root insurance (ROOT) Reverse DCF Analysis](./root_insurance.md) - references date: 2025-11-21
 
 
 Notes:
