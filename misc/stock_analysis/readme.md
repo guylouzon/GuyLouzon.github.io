@@ -12,6 +12,8 @@ Reference date: 2025-11-21
 - [Deep Analysis of Cryptocurrency XBR and AXL: Business Models, Use Cases, and Future Projections](./Deep%20Analysis%20of%20Cryptocurrency%20XBR%20and%20AXL_%20Busin.md) — Reference date: 2025-11-21
 - [Clearwater Analytics (CWAN) Reverse DCF Analysis](./Clearwater%20Analytics%20%28CWAN%29%20Reverse%20DCF%20Analysis.md) — Reference date: 2025-11-21
 - [Block Inc (XYZ) Fundamental Analysis & Reverse DCF Valuation](./Block%20Inc%20%28XYZ%29%20Fundamental%20Analysis%20%26%20Reverse%20DCF.md) — Reference date: 2025-11-21
+- [JPMorgan (JPM) Fundamental Analysis](./jpmorgn.md) - references date: 2025-11-21
+
 
 Notes:
 - Filenames contain spaces and special characters; links use URL-encoded filenames to avoid parsing issues.
